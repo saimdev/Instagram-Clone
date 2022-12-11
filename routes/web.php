@@ -20,8 +20,3 @@ Route::get('/', function () {
 Route::get('login',[DataBase::class, 'login']);
 Route::view('signup', 'signup');
 Route::post('register', [DataBase::class, 'signup']);
-Route::view('cutie', 'cutie');
-Route::view('cutieadd', 'cutieadd');
-Route::view('projects', 'cutieprojects');
-Route::view('addproject', 'addprojects');
-Route::view('cutieprofile', 'cutieprofile');
