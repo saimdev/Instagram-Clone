@@ -54,7 +54,7 @@ form{
     backdrop-filter: blur(25px) saturate(100%);
     color: white;
     font-size: 0.9rem;
-    padding-top: 1.2rem !important;
+    padding: 1rem;
     width: 100%;
 }
 .logo{
