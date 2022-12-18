@@ -201,7 +201,8 @@ input:focus {
     width: 144px;
   }
 
-
-
-  /* AYESHA */
+.suggestion-image{
+    width: 60px;
+    border-radius: 100px;
+}
   

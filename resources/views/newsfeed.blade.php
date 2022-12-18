@@ -9,6 +9,7 @@
     <script src="{{asset('/app.js')}}"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="{{asset('/app.css')}}">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Satisfy&display=swap" rel="stylesheet">
     <title>Instagram Clone</title>
@@ -229,23 +230,6 @@
                         </div></div>
                         <div class="col col-3"><a href="" style="text-decoration: none; font-size:0.7rem;">Follow</a></div>
                     </div>
-                    <div class="row d-flex flex-row justify-content-center align-items-center" style="margin-top: 20px;">
-                        <div class="col col-2 "><img src="{{asset('/imgs/users/Bestie.png')}}" class="rightside-profile" alt=""></div>
-                        <div class="col col-7"><div class="profile-names d-flex flex-column" style="margin-right: 20px">
-                            <p style="font-size: 0.7rem; margin-bottom:0;">kiya_yar_rishi_bhai</p>
-                        <p style="font-size: 0.7rem; color:gray;margin-bottom:0;">Saim Abbas</p>
-                        </div></div>
-                        <div class="col col-3"><a href="" style="text-decoration: none; font-size:0.7rem;">Follow</a></div>
-                    </div>
-                    <div class="row d-flex flex-row justify-content-center align-items-center" style="margin-top: 20px;">
-                        <div class="col col-2 "><img src="{{asset('/imgs/users/Bestie.png')}}" class="rightside-profile" alt=""></div>
-                        <div class="col col-7"><div class="profile-names d-flex flex-column" style="margin-right: 20px">
-                            <p style="font-size: 0.7rem; margin-bottom:0;">kiya_yar_rishi_bhai</p>
-                        <p style="font-size: 0.7rem; color:gray;margin-bottom:0;">Saim Abbas</p>
-                        </div></div>
-                        <div class="col col-3"><a href="" style="text-decoration: none; font-size:0.7rem;">Follow</a></div>
-                    </div>
-                    
                     
                 </div>
             </div>

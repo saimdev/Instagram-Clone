@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use App\Http\Controllers\MailController;
+use Mail;
+use Crypt;
+use App\Mail\SendMail;
 
 class DataBase extends Controller
 {
@@ -62,9 +66,38 @@ class DataBase extends Controller
             $newuser->bdday = $req->day;
             $newuser->bdyear = $req->year;
             $newuser->save();
+            $random_code = rand(10000,99999);
+            return redirect('send-mail/'.$email.'/'.Crypt::encrypt($random_code).'/');
         }catch(Exception $e){
             return redirect()->back()->with('phone_email',$e->getMessage());
         }
         return redirect('/');
+    }
+
+    public function index($email, $code)
+    {
+        $mailData = [
+            'title' => 'Mail From Instagram Clone',
+            'body' => 'Hi,
+            Someone tried to sign up for an Instagram account with '.$email.'. If it was you, enter this confirmation code in the app: '.Crypt::decrypt($code)
+        ];
+         
+        Mail::to($email)->send(new SendMail($mailData));
+           
+        return view('confirmationAccount')->with('email', $email)->with('code', $code);
+    }
+
+    function confirmAccount(Request $req, $email, $code){
+        if ($req->code==Crypt::decrypt($code)){
+            return view('firsttime');
+        }
+        else{
+            return redirect()->back()->with('phone_email', "Incorrect Confirmation Code");
+        }
+    }
+
+    function showusers(){
+        $data = User::all();
+        return view('firstime', ['users' => $data]);
     }
 }

@@ -22,3 +22,7 @@ Route::view('signup', 'signup');
 Route::post('register', [DataBase::class, 'signup']);
 Route::view('emailsignup', 'addbirthday');
 Route::post('registration/{name}/{email}/{username}/{password}', [DataBase::class, 'registration']);
+Route::get('/send-mail/{email}/{code}/', [DataBase::class, 'index']);
+Route::get('/send-mail/{email}/confirm/{code}', [DataBase::class, 'confirmAccount']);
+Route::get('firstime', [DataBase::class, 'showusers']);
+Route::view('newsfeed', 'newsfeed');
