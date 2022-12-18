@@ -28,4 +28,4 @@ Route::get('/send-mail/{email}/confirm/{code}', [DataBase::class, 'confirmAccoun
 Route::view('newsfeed', 'newsfeed');
 Route::get('profile/{username}', [DataBase::class, 'showProfile']);
 Route::get('editprofile/{username}', [DataBase::class, 'editProfile']);
-Route::get('updateprofile/{username}', [DataBase::class, 'updateProfile']);
+Route::post('editprofile/updateprofile/{username}', [DataBase::class, 'updateProfile']);

@@ -35,7 +35,7 @@
                 @if ($dp==0)
                 <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/blank.webp')}}" alt="" style="border-radius: 100px; width: 25px;"> Profile</a>
                 @else
-                <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/Bestie.png')}}" alt="" style="border-radius: 100px; width: 25px;"> Profile</a>
+                <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/'.$username.'.jpg')}}" alt="" style="border-radius: 100px; width: 25px;"> Profile</a>
                 @endif
                 <a href="/newsfeeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/menu-burger.svg')}}" alt=""> Logout</a>
             </div>
@@ -50,7 +50,7 @@
                         @if ($dp==0)
                         <img src="{{asset('/imgs/users/blank.webp')}}" class="" alt="" style="width: 10rem; border-radius:10rem; margin-right:3rem">
                         @else
-                        <img src="{{asset('/imgs/users/Bestie.png')}}" class="" alt="" style="width: 10rem; border-radius:10rem; margin-right:3rem">
+                        <img src="{{asset('/imgs/users/'.$username.'.jpg')}}" class="" alt="" style="width: 10rem; height:11rem; border-radius:10rem; margin-right:3rem">
                         @endif
                         
                     </div>

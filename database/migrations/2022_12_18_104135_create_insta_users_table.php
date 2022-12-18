@@ -21,9 +21,9 @@ return new class extends Migration
             $table->string('posts',20);
             $table->string('followers',20);
             $table->string('following',20);
-            $table->string('profilepicture',20);
-            $table->string('website',20);
-            $table->string('bio',500);
+            $table->text('profilepicture');
+            $table->text('website');
+            $table->text('bio');
             $table->string('phone',20);
             $table->string('gender',20);
             $table->timestamps();

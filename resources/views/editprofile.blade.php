@@ -35,7 +35,7 @@
                 @if ($dp==0)
                 <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/blank.webp')}}" alt="" style="border-radius: 100px; width: 25px;"> Profile</a>
                 @else
-                <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/Bestie.png')}}" alt="" style="border-radius: 100px; width: 25px;"> Profile</a>
+                <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/'.$username.'.jpg')}}" alt="" style="border-radius: 100px; width: 25px;"> Profile</a>
                 @endif
                 <a href="/newsfeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/menu-burger.svg')}}" alt=""> Logout</a>
             </div>
@@ -47,13 +47,24 @@
             <div class="col col-10 d-flex align-items-center justify-content-center flex-column text-white" style="">
                 <div class="p-5 my-5" style="border:none; border-radius:0.5rem;background: rgba(128, 128, 128, 0.2);
                 backdrop-filter: blur(25px) saturate(100%);">
-                    <form action="updateprofile/{{$username}}" method="post">
+                    <form action="updateprofile/{{$username}}" method="post" style="backdrop-filter: none; background:none; border:none;" enctype="multipart/form-data">
+                        @csrf
+                        @if(session()->has('success'))
+                            <div class="alert alert-success">
+                                {{ session()->get('success') }}
+                            </div>
+                        @endif
+                        @if(session()->has('message'))
+                            <div class="alert alert-danger">
+                                {{ session()->get('message') }}
+                            </div>
+                        @endif
                         <div class="d-flex justify-content-center flex-column text-white">
                             <div class="d-flex align-items-center">
                                 @if ($dp==0)
                                 <img src="{{asset('imgs/users/blank.webp')}}" style="width: 5rem; border-radius: 5rem;" alt="">
                             @else
-                                <img src="{{asset('imgs/users/Bestie.png')}}" alt="">
+                                <img src="{{asset('/imgs/users/'.$username.'.jpg')}}" style="width: 5rem; border-radius: 5rem;" alt="">
                             @endif
                             <div class="d-flex flex-column justify-content-center mx-4">
                                 <p style="margin-left:0.5rem;">{{$data[0]['username']}}</p>
@@ -63,7 +74,7 @@
                                 @else
                                     <label for="" class="mt-2" style="margin-left:0.5rem;font-size: 0.8rem; color:#0d6efd;">Change Profile Picture</label>
                                     <input type="file" name="image" style="">
-                                    <a href="" class="text-danger text-decoration-none" style="margin-left:0.5rem; font-size: 0.6rem;">Remove Profile Picture</a>
+                                    <a href="" class="text-danger text-decoration-none" style="margin-left:0.5rem; font-size: 0.7rem;">Remove Profile Picture</a>
                                 @endif
                             </div>
                             </div>

@@ -149,7 +149,46 @@ class DataBase extends Controller
         return view('editprofile', ['data'=>$data])->with('username', $username)->with('dp', $this->dp);
     }
 
-    function updateProfile($username){
+    function updateProfile(Request $req, $username){
+        try {
+            if($req->hasFile('image')){
+                $image = $req->file('image');
+                $image_name = $username.'.jpg';
+                $image->move(public_path('/imgs/users'),$image_name);
+                $profilepicture = "/imgs/users/".$image_name."/";
+            }
+    
+            if($req->filled('website')){
+                $website=$req->website;
+            }
+            else{
+                $website='0';
+            }
+            if($req->filled('bio')){
+                $bio=$req->bio;
+            }
+            else{
+                $bio='0';
+            }
+            if($req->filled('phone')){
+                $phone=$req->phone;
+            }
+            else{
+                $phone='0';
+            }
+            if($req->filled('gender')){
+                $gender=$req->gender;
+            }
+            else{
+                $gender='0';
+            }
+    
+            DB::update("UPDATE `insta_users` SET `profilepicture` = '".$profilepicture."', `website` = '".$website."', `bio` = '".$bio."', `phone` = '".$phone."', `gender` = '".$gender."'");
+            return redirect()->back()->with('success', "Profile Saved");
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('message', $e->getMessage());
+        }
         
     }
 
