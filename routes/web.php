@@ -27,3 +27,5 @@ Route::get('/send-mail/{email}/confirm/{code}', [DataBase::class, 'confirmAccoun
 // Route::get('firstime', [DataBase::class, 'showusers']);
 Route::view('newsfeed', 'newsfeed');
 Route::get('profile/{username}', [DataBase::class, 'showProfile']);
+Route::get('editprofile/{username}', [DataBase::class, 'editProfile']);
+Route::get('updateprofile/{username}', [DataBase::class, 'updateProfile']);

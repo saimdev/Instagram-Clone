@@ -16,10 +16,16 @@ return new class extends Migration
         Schema::create('insta_users', function (Blueprint $table) {
             $table->id();
             $table->string('username',20);
+            $table->string('name',20);
+            $table->string('email',50);
             $table->string('posts',20);
             $table->string('followers',20);
             $table->string('following',20);
             $table->string('profilepicture',20);
+            $table->string('website',20);
+            $table->string('bio',500);
+            $table->string('phone',20);
+            $table->string('gender',20);
             $table->timestamps();
         });
     }

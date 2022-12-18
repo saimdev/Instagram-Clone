@@ -7,6 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\File;
 use App\Models\User;
+use App\Models\InstaUser;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Http\Controllers\MailController;
@@ -16,6 +17,8 @@ use App\Mail\SendMail;
 
 class DataBase extends Controller
 {
+    public $count=0;
+    public $dp=0;
     function login(Request $req){
         $req->validate([
           'email'=> 'required',
@@ -77,6 +80,8 @@ class DataBase extends Controller
                 $table->string('likes',20);
             });
 
+            DB::insert("insert into `insta_users` (`id`, `username`, `name`, `email`, `posts`, `followers`, `following`, `profilepicture`, `website`, `bio`, `phone`, `gender`) values (NULL,'".$username."', '".$name."', '".$email."', '0','0','0','0', '0', '0', '0', '0')");
+
             $random_code = rand(10000,99999);
             return redirect('send-mail/'.$email.'/'.Crypt::encrypt($random_code).'/');
         }catch(Exception $e){
@@ -100,20 +105,52 @@ class DataBase extends Controller
 
     function confirmAccount(Request $req, $email, $code){
         if ($req->code==Crypt::decrypt($code)){
-            $data = User::all();
+            $data = User::where('email', '!=' ,$email)->get();
+            
             $user = DB::table('users')->where('email', $email)->get();
             foreach($user as $item){
                 $username = $item->username;
             }
-            return view('firstime', ['users' => $data])->with('username', $username);
+            $this->checkCount($username);
+            // echo $data;
+            return view('firstime', ['users' => $data])->with('username', $username)->with('dp', $this->dp);
         }
         else{
             return redirect()->back()->with('phone_email', "Incorrect Confirmation Code");
         }
     }
 
+    function checkCount($username){
+        $data = InstaUser::where('username',$username)->get();
+        
+        if($data[0]['posts']=='0'){
+            $this->count=0;
+        }
+        else{
+            $this->count=1;
+        }
+        if($data[0]['profilepicture']=='0'){
+            $this->dp=0;
+        }
+        else{
+            $this->dp=1;
+        }
+    }
+
     function showProfile($username){
-        DB::insert("insert into `insta_users` (`id`, `username`, `posts`, `followers`, `following`, `profilepicture`) values (NULL,'".$username."','0','0','0','0')");
+        $this->checkCount($username);
+        $data=InstaUser::all();
+        return view('profile', ['details'=>$data])->with('username', $username)->with('count', $this->count)->with('dp', $this->dp);
+    }
+
+    function editProfile($username){
+        $this->checkCount($username);
+        $data = InstaUser::where('username', $username)->get();
+        return view('editprofile', ['data'=>$data])->with('username', $username)->with('dp', $this->dp);
+    }
+
+    function updateProfile($username){
+        
     }
 
 }
