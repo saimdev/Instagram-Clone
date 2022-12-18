@@ -32,14 +32,39 @@ class DataBase extends Controller
         
         try {
             $newuser = new User;
-            $newuser->name = $req->name;
-            $newuser->username = $req->username;
-            $newuser->email = $req->email;
-            $newuser->password = $req->password;
-            $newuser->save();
+            $name = $req->name;
+            $email = $req->email;
+            $username = $req->username;
+            $password = $req->password;
+            $data = User::all();
+            foreach($data as $user){
+                if($user->email==$email){
+                    return redirect()->back()->with('phone_email','Email Already Exists');
+                }
+                if($user->username==$username){
+                    return redirect()->back()->with('phone_email','Username Already Exists');
+                }
+            }
         } catch(Exception $e){
-               return redirect()->back()->with('phone_email','User with this email already exists');
+               return redirect()->back()->with('phone_email',$e->getMessage());
            }
+        return view('addbirthday')->with('name', $name)->with('name', $name)->with('username', $username)->with('email', $email)->with('password', $password);
+    }
+
+    function registration(Request $req, $name, $email, $username, $password){
+        try {
+            $newuser = new User;
+            $newuser->name = $name;
+            $newuser->email = $email;
+            $newuser->username = $username;
+            $newuser->password = $password;
+            $newuser->bdmonth = $req->month;
+            $newuser->bdday = $req->day;
+            $newuser->bdyear = $req->year;
+            $newuser->save();
+        }catch(Exception $e){
+            return redirect()->back()->with('phone_email',$e->getMessage());
+        }
         return redirect('/');
     }
 }
