@@ -1,3 +1,6 @@
+<?php
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,7 +32,7 @@
                 <a href="/newsfeeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/facebook-messenger.svg')}}" alt=""> Messages</a>
                 <a href="/newsfeeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/logos/heart.svg')}}" alt=""> Notifications</a>
                 <a href="/newsfeeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/add.svg')}}" alt=""> Create</a>
-                <a href="/newsfeeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/Bestie.png')}}" alt="" style="border-radius: 100px; width: 25px;"> Profile</a>
+                <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/Bestie.png')}}" alt="" style="border-radius: 100px; width: 25px;"> Profile</a>
                 <a href="/newsfeeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/menu-burger.svg')}}" alt=""> Logout</a>
             </div>
 
@@ -45,8 +48,8 @@
                         <div class="d-flex align-items-center justify-content-between my-3">
                             <img class="suggestion-image" src="{{asset('/imgs/users/Bestie.png')}}" alt="">
                             <div class="d-flex flex-column" style="padding-right: 20rem">
-                                <p class="fw-bold">{{$user->username}}</p>
-                                <p class="" style="color:gray">{{$user->name}}</p>
+                                <p class="fw-bold" style="font-size: 0.8rem">{{$user->username}}</p>
+                                <p class="" style="color:gray; font-size: 0.8rem">{{$user->name}}</p>
                             </div>
                             <a href="follow/{{$user->username}}" class="text-white border-0 text-decoration-none p-2" style="border-radius:0.4rem; font-size:0.9rem; background: #0d6efd">Follow</a>
                         </div>

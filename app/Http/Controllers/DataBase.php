@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\File;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -66,6 +69,14 @@ class DataBase extends Controller
             $newuser->bdday = $req->day;
             $newuser->bdyear = $req->year;
             $newuser->save();
+
+            Schema::create($username, function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('post',100);
+                $table->string('comments',20);
+                $table->string('likes',20);
+            });
+
             $random_code = rand(10000,99999);
             return redirect('send-mail/'.$email.'/'.Crypt::encrypt($random_code).'/');
         }catch(Exception $e){
@@ -89,15 +100,20 @@ class DataBase extends Controller
 
     function confirmAccount(Request $req, $email, $code){
         if ($req->code==Crypt::decrypt($code)){
-            return view('firsttime');
+            $data = User::all();
+            $user = DB::table('users')->where('email', $email)->get();
+            foreach($user as $item){
+                $username = $item->username;
+            }
+            return view('firstime', ['users' => $data])->with('username', $username);
         }
         else{
             return redirect()->back()->with('phone_email', "Incorrect Confirmation Code");
         }
     }
 
-    function showusers(){
-        $data = User::all();
-        return view('firstime', ['users' => $data]);
+    function showProfile($username){
+        DB::insert("insert into `insta_users` (`id`, `username`, `posts`, `followers`, `following`, `profilepicture`) values (NULL,'".$username."','0','0','0','0')");
     }
+
 }
