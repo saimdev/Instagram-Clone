@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class InstaUser extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'posts',
+        'followings',
+        'followers',
+    ];
 }

@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('username',20);
             $table->string('name',20);
             $table->string('email',50);
-            $table->string('posts',20);
-            $table->string('followers',20);
-            $table->string('following',20);
+            $table->integer('posts');
+            $table->integer('followers');
+            $table->integer('following');
             $table->text('profilepicture');
             $table->text('website');
             $table->text('bio');

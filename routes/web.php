@@ -29,3 +29,5 @@ Route::view('newsfeed', 'newsfeed');
 Route::get('profile/{username}', [DataBase::class, 'showProfile']);
 Route::get('editprofile/{username}', [DataBase::class, 'editProfile']);
 Route::post('editprofile/updateprofile/{username}', [DataBase::class, 'updateProfile']);
+Route::get('addnewpost/{username}', [DataBase::class, 'addnewpost']);
+Route::post('addnewpost/postpicture/{username}', [DataBase::class, 'postPicture']);

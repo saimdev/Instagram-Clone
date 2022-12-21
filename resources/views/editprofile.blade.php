@@ -33,9 +33,9 @@
                 <a href="/newsfeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/logos/heart.svg')}}" alt=""> Notifications</a>
                 <a href="/newsfeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/add.svg')}}" alt=""> Create</a>
                 @if ($dp==0)
-                <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/blank.webp')}}" alt="" style="border-radius: 100px; width: 25px;"> Profile</a>
+                <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/blank.webp')}}" alt="" style="clip-path:circle();  width: 40px; margin-left:-0.5rem;"> Profile</a>
                 @else
-                <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/'.$username.'.jpg')}}" alt="" style="border-radius: 100px; width: 25px;"> Profile</a>
+                <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/'.$username.'.jpg')}}" alt="" style="clip-path:circle();  width: 40px; margin-left:-0.5rem;"> Profile</a>
                 @endif
                 <a href="/newsfeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/menu-burger.svg')}}" alt=""> Logout</a>
             </div>
@@ -62,9 +62,9 @@
                         <div class="d-flex justify-content-center flex-column text-white">
                             <div class="d-flex align-items-center">
                                 @if ($dp==0)
-                                <img src="{{asset('imgs/users/blank.webp')}}" style="width: 5rem; border-radius: 5rem;" alt="">
+                                <img src="{{asset('imgs/users/blank.webp')}}" style="width: 7rem; border-radius: 5rem;" alt="">
                             @else
-                                <img src="{{asset('/imgs/users/'.$username.'.jpg')}}" style="width: 5rem; border-radius: 5rem;" alt="">
+                                <img src="{{asset('/imgs/users/'.$username.'.jpg')}}" style="width: 7rem; clip-path:circle();" alt="">
                             @endif
                             <div class="d-flex flex-column justify-content-center mx-4">
                                 <p style="margin-left:0.5rem;">{{$data[0]['username']}}</p>

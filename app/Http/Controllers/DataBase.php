@@ -76,11 +76,25 @@ class DataBase extends Controller
             Schema::create($username, function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('post',100);
-                $table->string('comments',20);
-                $table->string('likes',20);
+                $table->integer('comments');
+                $table->integer('likes');
+                $table->string('location', 20);
+                $table->integer('like');
+                $table->text('caption');
             });
 
-            DB::insert("insert into `insta_users` (`id`, `username`, `name`, `email`, `posts`, `followers`, `following`, `profilepicture`, `website`, `bio`, `phone`, `gender`) values (NULL,'".$username."', '".$name."', '".$email."', '0','0','0','0', '0', '0', '0', '0')");
+            Schema::create($username.'_followings', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('frndusername', 30);
+            });
+
+            DB::insert("insert into `insta_users` (`id`, `username`, `name`, `email`, `posts`, `followers`, `following`, `profilepicture`, `website`, `bio`, `phone`, `gender`) values (NULL,'".$username."', '".$name."', '".$email."', 0, 0, 0,'0', '0', '0', '0', '0')");
+
+            $path = public_path('imgs/users/'.$username."/");
+
+            if(!File::isDirectory($path)){
+                File::makeDirectory($path, 0777, true, true);
+            }
 
             $random_code = rand(10000,99999);
             return redirect('send-mail/'.$email.'/'.Crypt::encrypt($random_code).'/');
@@ -139,8 +153,10 @@ class DataBase extends Controller
 
     function showProfile($username){
         $this->checkCount($username);
-        $data=InstaUser::all();
-        return view('profile', ['details'=>$data])->with('username', $username)->with('count', $this->count)->with('dp', $this->dp);
+        $data=InstaUser::where('username', $username)->get();
+        $profile = DB::select("SELECT * from `".$username."`");
+        // echo $data;
+        return view('profile', ['details'=>$data])->with('username', $username)->with('count', $this->count)->with('dp', $this->dp)->with('profile', $profile);
     }
 
     function editProfile($username){
@@ -156,6 +172,7 @@ class DataBase extends Controller
                 $image_name = $username.'.jpg';
                 $image->move(public_path('/imgs/users'),$image_name);
                 $profilepicture = "/imgs/users/".$image_name."/";
+                DB::update("UPDATE `insta_users` SET `profilepicture` = '".$profilepicture."'");
             }
     
             if($req->filled('website')){
@@ -183,11 +200,58 @@ class DataBase extends Controller
                 $gender='0';
             }
     
-            DB::update("UPDATE `insta_users` SET `profilepicture` = '".$profilepicture."', `website` = '".$website."', `bio` = '".$bio."', `phone` = '".$phone."', `gender` = '".$gender."'");
+            DB::update("UPDATE `insta_users` SET `website` = '".$website."', `bio` = '".$bio."', `phone` = '".$phone."', `gender` = '".$gender."'");
             return redirect()->back()->with('success', "Profile Saved");
 
         } catch (Exception $e) {
             return redirect()->back()->with('message', $e->getMessage());
+        }
+        
+    }
+
+    function addnewpost($username){
+        $this->checkCount($username);
+        return view('addnewpost')->with('username', $username)->with('dp', $this->dp);
+    }
+
+    function postPicture(Request $req, $username){
+
+        try {
+            $path = public_path('imgs/users/'.$username."/");
+
+            $data = InstaUser::where('username', $username)->get();
+            $postNo = $data[0]['posts'];
+
+            Schema::create($username.'_post_'.$postNo, function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('frndusername', 30);
+                $table->text('comment');
+            });
+
+
+            // echo $data[0]['posts'];
+
+            if($req->hasFile('image')){
+                $image = $req->file('image');
+                $image_name = $username.'_post_'.$postNo.'.jpg';
+                $image->move($path, $image_name);
+            }
+
+            $postNo = $postNo+1;
+            DB::update("UPDATE `insta_users` SET `posts` = ".$postNo);
+            
+            $caption = $req->caption;
+            
+            if($req->filled('location')){
+                $location=$req->location;
+            }
+            else{
+                $location='';
+            }
+            DB::insert("INSERT INTO `notyoursaim`(`id`, `post`, `comments`, `likes`, `location`, `like`, `caption`) VALUES (NULL,'".$path.$image_name.'/'."',0 ,0 ,'".$location."',0 ,'".$caption."')");
+            return redirect()->back()->with('success', 'Successfully Posted');
+        } catch (Throwable $th) {
+            return redirect()->back()->with('message', $th->getMessage());
         }
         
     }

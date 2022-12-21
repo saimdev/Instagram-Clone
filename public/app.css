@@ -203,7 +203,8 @@ input:focus {
 
 .suggestion-image{
     width: 60px;
-    border-radius: 100px;
+    clip-path:circle();
+    margin-right: 1rem;
 }
 
 .editinput{
@@ -221,4 +222,6 @@ textarea{
     border-radius: 0.3rem;
     font-size: 0.9rem;
 }
+
+  
   
