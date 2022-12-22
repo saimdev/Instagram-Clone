@@ -19,7 +19,7 @@
         <div class="row login">
             <div class="col col-4"></div>
             <div class="col col-4">
-                <form class="py-4 px-5" action="confirm/{{$code}}" method="GET">                  
+                <form class="py-4 px-5" action="/confirm/{{$email}}/{{$code}}/{{$username}}" method="GET">                  
                     <span class="d-flex justify-content-center">
                         <img class="bd-image" src="{{asset('/imgs/logos/mail.png')}}" alt="" style="">
                     </span>

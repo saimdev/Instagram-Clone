@@ -37,7 +37,7 @@
                 @else
                 <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/'.$username.'.jpg')}}" alt="" style="clip-path:circle();  width: 40px; margin-left:-0.5rem;"> Profile</a>
                 @endif
-                <a href="/newsfeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/menu-burger.svg')}}" alt=""> Logout</a>
+                <a href="/logout" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/menu-burger.svg')}}" alt=""> Logout</a>
             </div>
 
 
@@ -202,6 +202,28 @@
                             <button type="submit" class="btn btn-primary w-25" style="margin-left:8.2rem; font-size: 0.9rem">Submit</button>
                         </div>
                     </form>
+                </div>
+                <div class="row w-75 footer mt-4">
+                    <div class="col col-12 d-flex justify-content-between footer-links flex-wrap">
+                        <a href="">Meta</a>
+                        <a href="">About</a>
+                        <a href="">Blog</a>
+                        <a href="">Jobs</a>
+                        <a href="">API</a>
+                        <a href="">Privacy</a>
+                        <a href="">Terms</a>
+                        <a href="">Top Accounts</a>
+                        <a href="">Hashtags</a>
+                        <a href="">Locations</a>
+                        <a href="">Instagram Lite</a>
+                        <a href="">Contact</a>
+                        <a href="">Uploading & Non-Users</a>
+                    </div>
+                </div>
+                <div class="row copyright">
+                    <div class="col d-flex justify-content-center mt-4">
+                        <span>&copy; 2022 Instagram Clone from Saim</span>
+                    </div>
                 </div>
             </div>
 

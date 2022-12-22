@@ -107,7 +107,11 @@ margin-right: 15px;
   
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: linear-gradient(0.90turn, #515BD4,#8134af,#dd2a7b, #f58529, #feda77);
+  }
+
+  .check-icon{
+      fill: #515BD4;
   }
 
   span{
@@ -192,6 +196,16 @@ input{
     border: none;
 }
 
+input[type="submit"] {
+    margin-left: -50px;
+    width: 50px;
+    border: none;
+    background-color: transparent;
+    color: #0d6efd;
+    padding-right: 4px;
+    padding: 0 !important;
+}
+
 input:focus {
     outline: none;
   }
@@ -221,6 +235,37 @@ textarea{
     padding: 0.5rem;
     border-radius: 0.3rem;
     font-size: 0.9rem;
+}
+
+.hover-icon{
+    width: 25px;
+}
+
+.profile-post {
+	position: relative;
+	display: flex;
+}
+
+.profile-post:hover .edit {
+	display: flex;
+}
+
+.profile-post:hover .post-image{
+    opacity: 0.4;
+}
+
+.edit {
+	margin-top: 11rem;
+    margin-left: 5rem;
+	position: absolute;
+	/* right: 0; */
+	top: 0;
+	display: none;
+}
+
+.comments{
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
   

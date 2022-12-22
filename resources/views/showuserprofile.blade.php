@@ -46,16 +46,17 @@
                         @if ($dp==0)
                         <img src="{{asset('/imgs/users/blank.webp')}}" class="" alt="" style="width: 10rem; clip-path:circle(); margin-right:3rem">
                         @else
-                        <img src="{{asset('/imgs/users/'.$username.'.jpg')}}" class="" alt="" style="width: 10rem; height:11rem; clip-path:circle(); margin-right:3rem">
+                        <img src="{{asset('/imgs/users/'.$frienduser.'.jpg')}}" class="" alt="" style="width: 10rem; height:11rem; clip-path:circle(); margin-right:3rem">
                         @endif
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                         <div class="d-flex align-items-center my-2">
                             <p class="mx-2">{{$details[0]['username']}}</p>
-                            <a href="/editprofile/{{$username}}" class="mx-5 text-decoration-none text-white" style="padding:0.5rem;font-size: 0.75rem; border-radius:0.3rem; border:1px solid gray">Edit Profile</a>
-                            <a href="" class=""><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" class="bi bi-gear-fill" viewBox="0 0 16 16">
-                                <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
-                              </svg></a>
+                            @if ($frndcheck==1)
+                                <a href="/{{$username}}/unfollow/{{$frienduser}}" class="btn-primary mx-4 text-decoration-none py-1 px-3" style="border-radius: 0.5rem;">Unfollow</a>
+                            @else
+                                <a href="/{{$username}}/follow/{{$frienduser}}" class="btn-primary mx-4 text-decoration-none py-1 px-3" style="border-radius: 0.5rem;">Follow</a>
+                            @endif
                         </div>
                         <div class="d-flex align-items-center my-2">
                             <p class="mx-2">{{$details[0]['posts']}} posts</p>
@@ -72,19 +73,19 @@
                     </div>
                 </div>
                 <div class="my-5 d-flex flex-row justify-content-center container-fluid flex-wrap" style="">
-                    @if ($count==0)
+                    @if ($frndcount==0)
                         <h2 class="h2 fw-bold" style="padding:6rem 0;">No Post to Show</h2>
                     @else
                         @for ($i = 0; $i < $postcount; $i++)
                             <div class="profile-post">
-                                <a href="/post/{{$username}}/{{$username}}_post_{{$i+1}}/{{$username}}_post_{{$i}}" class="text-white">
-                                <img src="{{asset('/imgs/users/'.$username.'/'.$username.'_post_'.$i.'.jpg')}}" alt="" class="p-3 post-image" height="400rem" width="270rem" style="border-radius: 1.5rem;">
+                                <a href="/{{$username}}/post/{{$frienduser}}/{{$frienduser}}_post_{{$i+1}}/{{$frienduser}}_post_{{$i}}" class="text-white">
+                                <img src="{{asset('/imgs/users/'.$frienduser.'/'.$frienduser.'_post_'.$i.'.jpg')}}" alt="" class="p-3 post-image" height="400rem" width="270rem" style="border-radius: 1.5rem;">
                                 <div class="edit">
                                     <div class="d-flex align-items-center">
                                         <div class="d-flex flex-column align-items-center mx-1">
                                             <img src="{{asset('/imgs/logos/heart.svg')}}" alt="" class="hover-icon">
                                             @foreach ($profile as $item)
-                                                @if ($item->post==$username.'_post_'.($i+1))
+                                                @if ($item->post==$frienduser.'_post_'.($i+1))
                                                     <p>{{$item->likes}}</p>
                                                 @endif
                                             @endforeach
@@ -92,7 +93,7 @@
                                         <div class="d-flex flex-column align-items-center mx-5">
                                             <img src="{{asset('/imgs/logos/comment-alt-middle2.svg')}}" alt="" class="hover-icon">
                                             @foreach ($profile as $item)
-                                                @if ($item->post==$username.'_post_'.($i+1))
+                                                @if ($item->post==$frienduser.'_post_'.($i+1))
                                                     <p>{{$item->comments}}</p>
                                                 @endif
                                             @endforeach
