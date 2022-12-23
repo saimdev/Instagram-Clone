@@ -140,10 +140,9 @@ margin-right: 15px;
   }
 
   .newsfeed-profile{
-      width: 70px;
+      width: 65px;
       border-radius: 100px;
       margin-left: -10px;
-      border: 0.1rem solid rgb(56, 56, 56);
   }
 
   .menu-items:hover{
@@ -151,9 +150,9 @@ margin-right: 15px;
   }
 
   .rightside-profile{
-      width: 40px;
-      border-radius: 100px;
-      border: 0.1rem solid rgb(56, 56, 56);
+      width: 2.5rem;
+      clip-path:circle();
+      /* border: 0.1rem solid rgb(56, 56, 56); */
   }
 
   .stories-profile{

@@ -45,7 +45,6 @@ Route::view('logout', 'welcome');
 
 
 // Route::get('firstime', [DataBase::class, 'showusers']);
-Route::view('newsfeed', 'newsfeed');
 Route::get('profile/{username}', [DataBase::class, 'showProfile']);
 Route::get('editprofile/{username}', [DataBase::class, 'editProfile']);
 Route::post('editprofile/updateprofile/{username}', [DataBase::class, 'updateProfile']);
@@ -56,3 +55,6 @@ Route::get('{username}/post/{frienduser}/{postid}/{postsearchid}',[DataBase::cla
 Route::get('{username}/user/{frienduser}', [DataBase::class, 'showuserprofile']);
 Route::post('post/{username}/{postid}/commentonpost',[DataBase::class, 'commentonpost']);
 Route::get('{username}/follow/{frienduser}', [DataBase::class, 'followuser']);
+Route::get('{username}/unfollow/{frienduser}', [DataBase::class, 'unfollowuser']);
+Route::get('newsfeed/{username}', [DataBase::class, 'showmainwall']);
+Route::get('suggestions/{username}', [DataBase::class, 'suggestions']);

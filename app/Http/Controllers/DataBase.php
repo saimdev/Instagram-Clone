@@ -32,6 +32,10 @@ class DataBase extends Controller
         $password = $req->password;
         $data = DB::table('users')->where('email', $email)->where('password', $password)->get();
         $check = count($data);
+        foreach($data as $user){
+            $username = $user->username;
+        }
+        $this->checkCount($username);
         // $authcheck = AuthCheck::where('id', 1)->get();
         // echo $authcheck[0]['check'];
         if($check!=0){
@@ -39,7 +43,7 @@ class DataBase extends Controller
                 ->where('id', 1)
                 ->update(['check' => 1]);
             // return redirect('/newsfeed'); 
-            return view('newsfeed');
+            return redirect('/newsfeed/'.$username);
         }
         else{
             return redirect()->back()->with('message', 'Sorry, your email or password was incorrect. Please double-check your credentials.');
@@ -96,6 +100,11 @@ class DataBase extends Controller
                 $table->string('frndusername', 30);
             });
 
+            Schema::create($username.'_followers', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('frndusername', 30);
+            });
+
             DB::insert("insert into `insta_users` (`id`, `username`, `name`, `email`, `posts`, `followers`, `following`, `profilepicture`, `website`, `bio`, `phone`, `gender`) values (NULL,'".$username."', '".$name."', '".$email."', 0, 0, 0,'0', '0', '0', '0', '0')");
 
             $path = public_path('imgs/users/'.$username."/");
@@ -130,6 +139,25 @@ class DataBase extends Controller
             $data = User::where('email', '!=' ,$email)->get();
             $followers = DB::select("select * from `".$username."_followings`");
             $data->toBase()->merge($followers);
+            $checkD=0;
+            $j=0;
+            $emptyArray = []; 
+            foreach($followers as $suggested){
+                for($i=0; count($data); $i++){
+                    if($suggested->frndusername!=$data[$i]['username']){
+                        $checkD = 1;
+                        $j=$i;
+                    }
+                    else{
+                        $checkD = 0;
+                        $j=0;
+                    }
+                }
+                if($checkD==1){
+                    $newData[]=$data[$j]['username'];
+                }
+                // echo $suggested->frndusername;
+            }
             
             $user = DB::table('users')->where('email', $email)->get();
             foreach($user as $item){
@@ -140,11 +168,25 @@ class DataBase extends Controller
             DB::table('auth_checks')
                 ->where('id', 1)
                 ->update(['check' => 1]);
-            return view('firstime', ['users' => $data])->with('username', $username)->with('dp', $this->dp);
+            dd($newData);
+            // if($checkD==1){
+            //     return view('firstime', ['users' => $newData])->with('username', $username)->with('dp', $this->dp);
+            // }
+            // else{
+            //     return view('firstime', ['users' => $emptyArray])->with('username', $username)->with('dp', $this->dp);
+            // }
         }
         else{
             return redirect()->back()->with('phone_email', "Incorrect Confirmation Code");
         }
+    }
+
+    function suggestions($username){
+        $data = User::where('username', '!=' ,$username)->get();
+        $followers = DB::select("select * from `".$username."_followings`");
+        $data->toBase()->merge($followers);
+        $this->checkCount($username);
+        return view('suggestions', ['users'=>$data])->with('username', $username)->with('dp', $this->dp);
     }
 
     function checkCount($username){
@@ -325,6 +367,7 @@ class DataBase extends Controller
 
     function followuser($username, $frienduser){
         DB::insert("insert into `".$username."_followings` (`id`, `frndusername`) values (NULL, '".$frienduser."')");
+        DB::insert("insert into `".$frienduser."_followers` (`id`, `frndusername`) values (NULL, '".$username."')");
         $data = DB::select("select * from `insta_users` where `username` = '".$frienduser."'");
         $userdata = DB::select("select * from `insta_users` where `username` = '".$username."'");
         foreach($data as $user){
@@ -338,6 +381,112 @@ class DataBase extends Controller
         DB::update("UPDATE `insta_users` SET `followers` = ".$followers." where `username` = '".$frienduser."'");
         DB::update("UPDATE `insta_users` SET `following` = ".$followings." where `username` = '".$username."'");
         return redirect()->back();
+    }
+
+    function unfollowuser($username, $frienduser){
+        DB::delete("delete from `".$username."_followings` where `frndusername` = '".$frienduser."'");
+        DB::delete("delete from `".$frienduser."_followers` where `frndusername` = '".$username."'");
+        $data = DB::select("select * from `insta_users` where `username` = '".$frienduser."'");
+        $userdata = DB::select("select * from `insta_users` where `username` = '".$username."'");
+        foreach($data as $user){
+            $followers = $user->followers;
+        }
+        foreach($userdata as $user){
+            $followings = $user->following;
+        }
+        $followers = $followers-1;
+        $followings = $followings-1;
+        DB::update("UPDATE `insta_users` SET `followers` = ".$followers." where `username` = '".$frienduser."'");
+        DB::update("UPDATE `insta_users` SET `following` = ".$followings." where `username` = '".$username."'");
+        return redirect()->back();
+    }
+
+    function showmainwall($username){
+        $this->checkCount($username);
+        $followings = DB::select("select * from `".$username."_followings`");
+        $userData = User::where('username', $username)->get('name');
+        if($followings!=null){
+            foreach($followings as $friend){
+                $friendnames[] = $friend->frndusername;
+            }
+        
+            // $posts = DB::select("select * from `".$username."`");
+            foreach($friendnames as $friendpostCount){
+                // $data = DB::select("select (`posts`) from `insta_users` where `username` = '".$friendpostCount."'");
+                $postsCount[] =  InstaUser::where('username', $friendpostCount)->get('posts');
+                // $postsCount[]=$data;
+            }
+            // echo $friendnames[1];
+            $j=0;
+            foreach($postsCount as $count){
+                for($i=0; $i<$count[0]['posts']; $i++){
+                    $postNames[]=$friendnames[$j].'_post_'.$i;
+                }
+                $j++;
+            }
+
+            foreach($friendnames as $friendpostCount){
+                // $data = DB::select("select (`posts`) from `insta_users` where `username` = '".$friendpostCount."'");
+                $dps[] =  InstaUser::where('username', $friendpostCount)->get('profilepicture');
+                // $postsCount[]=$data;
+            }
+
+            shuffle($postNames);
+            // foreach($postsCount as $count){
+            //     echo $count[0]['posts'].'</br>';
+            // }
+
+            foreach($postNames as $post){
+                $comments[] = DB::select("select * from `".$post."`");
+            }
+
+            // if($dps[0]!='0'){
+            //     echo $dps[0].'</br>';
+            // }
+            // else{
+            //     echo 'Hello';
+            // }
+            
+            // dd($postNames);
+            // echo $friendnames[0];
+            // dd($comments);
+            // foreach($posts as $postName){
+            //     $noOfPosts[] = $postName->post;
+            // }
+            // foreach($postsCount as $count){
+            //     echo $count[0]['posts'];
+            // }
+            
+            // $arr = array(
+            //     array(
+            //         array(1,2 ,3)
+            //     ),
+            //     array(
+            //         array(2,2,3)
+            //     )
+            // );
+            // $result = json_decode($postsCount, true);
+            // dd($postsCount);
+            // for($i=0; $i<2; $i++){
+            //     for($j=0; $j<1; $j++){
+            //         for($k=0; $k<1; $k++){
+            //             for($l=0; $l<1; $l++){
+            //                 echo "[$i][$j][$k][$l] = ".$postsCount[$i][$j][$k][$l].'</br>';
+            //             }
+            //         }
+            //     }   
+            // }
+            // foreach($postsCount as $random){
+                // echo $random->[0][posts'];
+            // }
+        
+            // echo $userData[0]['name'];
+            return view('newsfeed')->with('postNames', $postNames)->with('comments', $comments)->with('friendnames', $friendnames)->with('dps', $dps)->with('username', $username)->with('dp', $this->dp)->with('name', $userData);
+        }
+        else{
+            return view('newsfeed')->with('username', $username)->with('dp', $this->dp)->with('name', $userData);
+        }
+        
     }
 
     // function commentonpost(Request $req, $postid, $username, $postowner){

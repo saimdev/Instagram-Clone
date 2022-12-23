@@ -48,7 +48,7 @@
                 <h4 class="h4 mb-3">Suggestions For You</h4>
                 <div class="p-4" style="border:none; border-radius:0.5rem;background: rgba(128, 128, 128, 0.2);
                 backdrop-filter: blur(25px) saturate(100%);">
-                    @if (count($users)==0)
+                    @if ($users->count()==0)
                         <h3 class="h3">No Users Found For Suggestion</h3>
                     @else
                         @foreach ($users as $user)
