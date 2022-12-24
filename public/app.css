@@ -141,7 +141,7 @@ margin-right: 15px;
 
   .newsfeed-profile{
       width: 65px;
-      border-radius: 100px;
+      clip-path:circle();
       margin-left: -10px;
   }
 

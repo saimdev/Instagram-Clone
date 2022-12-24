@@ -186,12 +186,20 @@ class DataBase extends Controller
             WHERE `username` NOT IN
                 (SELECT `frndusername` 
                  FROM `".$username."_followings`) AND `username` != '".$username."'");
-        shuffle($data);                 
+        shuffle($data);
+        foreach($data as $user){
+            $this->dps[]=DB::select("select `profilepicture`, `username` from `insta_users`");
+        }
+        // echo count($this->dps[0]);
+        // dd($this->dps[0][1]->profilepicture);
+        // foreach($dps as $dp){
+        //     dd($dp->profilepicture);
+        // }
         // $data = User::where('username', '!=' ,$username)->get();
         // $followers = DB::select("select * from `".$username."_followings`");
         // $data->toBase()->merge($followers);
         $this->checkCount($username);
-        return view('suggestions', ['users'=>$data])->with('username', $username)->with('dp', $this->dp);
+        return view('suggestions', ['users'=>$data])->with('username', $username)->with('dp', $this->dp)->with('dps', $this->dps);
     }
 
     function checkCount($username){

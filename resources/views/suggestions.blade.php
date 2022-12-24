@@ -27,15 +27,15 @@
             backdrop-filter: blur(0px) saturate(5%); height:100vh; border-radius:0 0.5rem 0.5rem 0;" >
                 <h3 class="h3 fw-normal text-white text-center my-4" style="margin-bottom:30px;font-family: 'Satisfy', cursive; margin-bottom: 1.3rem;">Instagram</h3>
                 <a href="/newsfeed/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/logos/home.svg')}}" alt=""> Home</a>
-                <a href="/newsfeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/search.svg')}}" alt=""> Search</a>
-                <a href="/newsfeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/logos/navigation.svg')}}" alt=""> Explore</a>
-                <a href="/newsfeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/facebook-messenger.svg')}}" alt=""> Messages</a>
-                <a href="/newsfeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/logos/heart.svg')}}" alt=""> Notifications</a>
-                <a href="/editprofile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/add.svg')}}" alt=""> Create</a>
+                <a href="" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/search.svg')}}" alt=""> Search</a>
+                <a href="" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/logos/navigation.svg')}}" alt=""> Explore</a>
+                <a href="" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/facebook-messenger.svg')}}" alt=""> Messages</a>
+                <a href="" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/logos/heart.svg')}}" alt=""> Notifications</a>
+                <a href="/addnewpost/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/add.svg')}}" alt=""> Create</a>
                 @if ($dp==0)
                 <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/blank.webp')}}" alt="" style="clip-path:circle();  width: 30px; margin-left:-0.2rem;"> Profile</a>
                 @else
-                <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/Bestie.png')}}" alt="" style="clip-path:circle();  width: 40px; margin-left:-0.5rem;"> Profile</a>
+                <a href="/profile/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/users/'.$username.'.jpg')}}" alt="" style="clip-path:circle();  width: 30px; margin-left:-0.2rem;"> Profile</a>
                 @endif
                 <a href="/logout" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/menu-burger.svg')}}" alt=""> Logout</a>
             </div>
@@ -54,11 +54,15 @@
                         @foreach ($users as $user)
                             <div class="d-flex align-items-center justify-content-between my-3">
                                 <div class="d-flex align-items-center">
-                                    @if ($dp==0)
-                                        <img class="suggestion-image" src="{{asset('/imgs/users/blank.webp')}}" alt="">
-                                    @else
-                                        <img class="suggestion-image" src="{{asset('/imgs/users/'.$user->username.'.jpg')}}" alt="">
-                                    @endif
+                                    @for ($i = 0; $i < count($dps[0]); $i++)
+                                        @if ($dps[0][$i]->username==$user->username)
+                                            @if ($dps[0][$i]->profilepicture=="0")
+                                                <img class="suggestion-image" src="{{asset('/imgs/users/blank.webp')}}" alt=""> 
+                                            @else
+                                                <img class="suggestion-image" src="{{asset('/imgs/users/'.$user->username.'.jpg')}}" alt="">
+                                            @endif
+                                        @endif
+                                    @endfor
                                     <div class="d-flex flex-column" style="padding-right: 20rem">
                                         <a href="/{{$username}}/user/{{$user->username}}" class="text-white text-decoration-none"><p class="fw-bold" style="font-size: 0.8rem">{{$user->username}}</p></a>
                                         <p class="" style="color:gray; font-size: 0.8rem">{{$user->name}}</p>
