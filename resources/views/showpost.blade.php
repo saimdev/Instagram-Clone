@@ -24,7 +24,7 @@
             <div class="col col-2 menu container-fluid d-flex flex-column justify-content-start align-items-start p-4" style="background: linear-gradient(0.90turn, rgba(81, 91, 212, 0.5),rgba(129, 52, 175, 0.5),rgba(221, 42, 123, 0.5), rgba(245, 133, 41, 0.5), rgba(254, 218, 119, 0.5));
             backdrop-filter: blur(0px) saturate(5%); border-radius:0 0.5rem 0.5rem 0;" >
                 <h3 class="h3 fw-normal text-white text-center my-4" style="margin-bottom:30px;font-family: 'Satisfy', cursive; margin-bottom: 1.3rem;">Instagram</h3>
-                <a href="/newsfeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/logos/home.svg')}}" alt=""> Home</a>
+                <a href="/newsfeed/{{$username}}" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/logos/home.svg')}}" alt=""> Home</a>
                 <a href="/newsfeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/search.svg')}}" alt=""> Search</a>
                 <a href="/newsfeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-4"><img src="{{asset('/imgs/logos/navigation.svg')}}" alt=""> Explore</a>
                 <a href="/newsfeed" class="d-flex flex-row align-items-center justify-content-center menu-items my-3"><img src="{{asset('/imgs/logos/facebook-messenger.svg')}}" alt=""> Messages</a>
@@ -104,17 +104,19 @@
                                 <div class="viewcomments container-flui p-0 w-100 d-flex flex-column justify-content-center">
                                     <p class="py-0 my-2" style="color: gray; font-size:0.7rem">Recent post</p>
                                 </div>
-                                <form action="commentonpost" method="post" style="border: none;
+                                @foreach ($collection as $item)
+                                    <form action="/commentonpost/{{$username}}/{{$item->post}}/{{$username}}" method="post" style="border: none;
                                     border-radius: none;
                                     background: none;
-                                    backdrop-filter: none;">
-                                <div class="comment container-flui p-0 w-100 d-flex  align-items-center my-1">
-                                    <a href=""><img class="operation-icon" src="{{asset('/imgs/logos/smile.svg')}}" alt=""></a>
-                                    
-                                        <input class="w-100" type="text" placeholder="Add a comment" style="flex-grow: 2">
-                                        <input type="submit" value="Post">
-                                </div>
-                                </form>
+                                    backdrop-filter: none;">    
+                                        @csrf
+                                        <div class="comment container-flui p-0 w-100 d-flex  align-items-center my-1">
+                                            <a href=""><img class="operation-icon" src="{{asset('/imgs/logos/smile.svg')}}" alt=""></a>
+                                                <input class="w-100" name="comment" type="text" placeholder="Add a comment" style="flex-grow: 2">
+                                                <input type="submit" value="Post">
+                                        </div>
+                                    </form>
+                                @endforeach
                             </div>
                         @else
                             <div class="d-flex flex-column ">                            
@@ -151,17 +153,19 @@
                                 <div class="viewcomments container-flui p-0 w-100 d-flex flex-column justify-content-center">
                                     <p class="py-0 my-2" style="color: gray; font-size:0.7rem">Recent post</p>
                                 </div>
-                                <form action="commentonpost" method="post" style="border: none;
+                                @foreach ($collection as $item)
+                                    <form action="/commentonpost/{{$username}}/{{$item->post}}/{{$username}}" method="post" style="border: none;
                                     border-radius: none;
                                     background: none;
-                                    backdrop-filter: none;">
-                                <div class="comment container-flui p-0 w-100 d-flex  align-items-center my-1">
-                                    <a href=""><img class="operation-icon" src="{{asset('/imgs/logos/smile.svg')}}" alt=""></a>
-                                    
-                                        <input class="w-100" type="text" placeholder="Add a comment" style="flex-grow: 2">
-                                        <input type="submit" value="Post">
-                                </div>
-                                </form>
+                                    backdrop-filter: none;">    
+                                        @csrf
+                                        <div class="comment container-flui p-0 w-100 d-flex  align-items-center my-1">
+                                            <a href=""><img class="operation-icon" src="{{asset('/imgs/logos/smile.svg')}}" alt=""></a>
+                                                <input class="w-100" name="comment" type="text" placeholder="Add a comment" style="flex-grow: 2">
+                                                <input type="submit" value="Post">
+                                        </div>
+                                    </form>
+                                @endforeach
                             </div>
                         @endif
                     </div>

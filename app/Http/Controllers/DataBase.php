@@ -14,6 +14,7 @@ use Exception;
 use App\Http\Controllers\MailController;
 use Mail;
 use Crypt;
+use Str;
 use App\Mail\SendMail;
 
 class DataBase extends Controller
@@ -21,6 +22,15 @@ class DataBase extends Controller
     public $count=0;
     public $dp=0;
     public $frndcount = 0;
+    public $postNames = [];
+    public $comments = [];
+    public $friendnames = [];
+    public $dps = [];
+    public $likes = [];
+    public $captions = [];
+    public $postsForDetails = [];
+    public $commentNo;
+    public $like;
 
     function login(Request $req){
         $req->validate([
@@ -136,28 +146,17 @@ class DataBase extends Controller
 
     function confirmAccount(Request $req, $email, $code, $username){
         if ($req->code==Crypt::decrypt($code)){
-            $data = User::where('email', '!=' ,$email)->get();
-            $followers = DB::select("select * from `".$username."_followings`");
-            $data->toBase()->merge($followers);
-            $checkD=0;
-            $j=0;
-            $emptyArray = []; 
-            foreach($followers as $suggested){
-                for($i=0; count($data); $i++){
-                    if($suggested->frndusername!=$data[$i]['username']){
-                        $checkD = 1;
-                        $j=$i;
-                    }
-                    else{
-                        $checkD = 0;
-                        $j=0;
-                    }
-                }
-                if($checkD==1){
-                    $newData[]=$data[$j]['username'];
-                }
-                // echo $suggested->frndusername;
-            }
+
+            // $data = User::where('email', '!=' ,$email)->get();
+            // $followers = DB::select("select * from `".$username."_followings`");
+
+            // $users = DB::select("SELECT `username` FROM `users` WHERE NOT EXISTS (SELECT `frndusername` FROM  `".$username."_followings` WHERE 'users.followings' = '".$username."_followings.frndusername') AND `username` != '".$username."'");
+            $data = DB::select("SELECT *
+            FROM `users`
+            WHERE `username` NOT IN
+                (SELECT `frndusername` 
+                 FROM `".$username."_followings`) AND `username` != '".$username."'");
+            shuffle($data);
             
             $user = DB::table('users')->where('email', $email)->get();
             foreach($user as $item){
@@ -168,9 +167,9 @@ class DataBase extends Controller
             DB::table('auth_checks')
                 ->where('id', 1)
                 ->update(['check' => 1]);
-            dd($newData);
+            // dd($newData);
             // if($checkD==1){
-            //     return view('firstime', ['users' => $newData])->with('username', $username)->with('dp', $this->dp);
+                return view('firstime', ['users' => $data])->with('username', $username)->with('dp', $this->dp);
             // }
             // else{
             //     return view('firstime', ['users' => $emptyArray])->with('username', $username)->with('dp', $this->dp);
@@ -182,9 +181,15 @@ class DataBase extends Controller
     }
 
     function suggestions($username){
-        $data = User::where('username', '!=' ,$username)->get();
-        $followers = DB::select("select * from `".$username."_followings`");
-        $data->toBase()->merge($followers);
+        $data = DB::select("SELECT *
+            FROM `users`
+            WHERE `username` NOT IN
+                (SELECT `frndusername` 
+                 FROM `".$username."_followings`) AND `username` != '".$username."'");
+        shuffle($data);                 
+        // $data = User::where('username', '!=' ,$username)->get();
+        // $followers = DB::select("select * from `".$username."_followings`");
+        // $data->toBase()->merge($followers);
         $this->checkCount($username);
         return view('suggestions', ['users'=>$data])->with('username', $username)->with('dp', $this->dp);
     }
@@ -303,7 +308,7 @@ class DataBase extends Controller
                 $image_name = $username.'_post_'.$postNo.'.jpg';
                 $image->move($path, $image_name);
             }
-
+            $postold = $postNo;
             $postNo = $postNo+1;
             DB::update("UPDATE `insta_users` SET `posts` = ".$postNo." where `username` = '".$username."'");
             
@@ -315,7 +320,7 @@ class DataBase extends Controller
             else{
                 $location='';
             }
-            DB::insert("INSERT INTO `".$username."`(`id`, `post`, `comments`, `likes`, `location`, `like`, `caption`) VALUES (NULL,'". $username.'_post_'.$postNo."',0 ,0 ,'".$location."',0 ,'".$caption."')");
+            DB::insert("INSERT INTO `".$username."`(`id`, `post`, `comments`, `likes`, `location`, `like`, `caption`) VALUES (NULL,'". $username.'_post_'.$postold."',0 ,0 ,'".$location."',0 ,'".$caption."')");
             return redirect()->back()->with('success', 'Successfully Posted');
         } catch (Throwable $th) {
             return redirect()->back()->with('message', $th->getMessage());
@@ -326,7 +331,7 @@ class DataBase extends Controller
     function showIndividualPost($username, $postid, $postsearchid){
         $this->checkCount($username);
         $postData = DB::select("select * from `".$postsearchid."`");
-        $data = DB::select("select * from `".$username."` where `post` = '".$postid."'");
+        $data = DB::select("select * from `".$username."` where `post` = '".$postsearchid."'");
         // dd($postData);
         // foreach($data as $item){
         //     echo $item;
@@ -338,7 +343,7 @@ class DataBase extends Controller
     function showUserPost($username, $frienduser, $postid, $postsearchid){
         $this->checkCount($username);
         $postData = DB::select("select * from `".$postsearchid."`");
-        $data = DB::select("select * from `".$frienduser."` where `post` = '".$postid."'");
+        $data = DB::select("select * from `".$frienduser."` where `post` = '".$postsearchid."'");
         // dd($postData);
         // foreach($data as $item){
         //     echo $item;
@@ -405,13 +410,27 @@ class DataBase extends Controller
         $this->checkCount($username);
         $followings = DB::select("select * from `".$username."_followings`");
         $userData = User::where('username', $username)->get('name');
+        $followingsCheck=0;
+        $postNamesCheck=0;
+        $dpsCount=0;
+        $commentsCheck=0;
+
+        $data = DB::select("SELECT *
+            FROM `users`
+            WHERE `username` NOT IN
+                (SELECT `frndusername` 
+                 FROM `".$username."_followings`) AND `username` != '".$username."'");
+        // dd($followings);
+        shuffle($data);
         if($followings!=null){
+
+            $followingsCheck=1;
             foreach($followings as $friend){
-                $friendnames[] = $friend->frndusername;
+                $this->friendnames[] = $friend->frndusername;
             }
         
             // $posts = DB::select("select * from `".$username."`");
-            foreach($friendnames as $friendpostCount){
+            foreach($this->friendnames as $friendpostCount){
                 // $data = DB::select("select (`posts`) from `insta_users` where `username` = '".$friendpostCount."'");
                 $postsCount[] =  InstaUser::where('username', $friendpostCount)->get('posts');
                 // $postsCount[]=$data;
@@ -420,25 +439,55 @@ class DataBase extends Controller
             $j=0;
             foreach($postsCount as $count){
                 for($i=0; $i<$count[0]['posts']; $i++){
-                    $postNames[]=$friendnames[$j].'_post_'.$i;
+                    $this->postNames[]=$this->friendnames[$j].'_post_'.$i;
+                    $this->postForDetails[]=$this->friendnames[$j].'_post_'.$i+1;
                 }
                 $j++;
             }
 
-            foreach($friendnames as $friendpostCount){
+            foreach($this->friendnames as $friendpostCount){
                 // $data = DB::select("select (`posts`) from `insta_users` where `username` = '".$friendpostCount."'");
-                $dps[] =  InstaUser::where('username', $friendpostCount)->get('profilepicture');
+                $this->dps[] =  InstaUser::where('username', $friendpostCount)->get('profilepicture');
                 // $postsCount[]=$data;
             }
 
-            shuffle($postNames);
+            if($this->dps!=null){
+                $dpsCount=1;
+            }
+            else{
+                $dpsCount=0;
+            }
+            if($this->postNames!=null){
+                shuffle($this->postNames);
+                $postNamesCheck=1;
+                foreach($this->postNames as $post){
+                    foreach($this->friendnames as $friend){
+                        if(Str::contains($post, $friend)){
+                            $friendusername = $friend;
+                        }
+                    }
+                    $this->comments[] = DB::select("select * from `".$post."`");
+                    $this->captions[] = DB::select("select * from `".$friendusername."` where `post` = '".$post."'");
+                    $this->likes[] = DB::select("select * from `".$friendusername."` where `post` = '".$post."'");
+                }
+
+                if($this->comments!=null){
+                    $commentsCheck=1;
+                }
+                else{
+                    $commentsCheck=0;
+                }
+            }
+            else{
+                $postNamesCheck=0;
+            }
+
+            // dd($this->captions);
             // foreach($postsCount as $count){
             //     echo $count[0]['posts'].'</br>';
             // }
 
-            foreach($postNames as $post){
-                $comments[] = DB::select("select * from `".$post."`");
-            }
+            
 
             // if($dps[0]!='0'){
             //     echo $dps[0].'</br>';
@@ -481,16 +530,60 @@ class DataBase extends Controller
             // }
         
             // echo $userData[0]['name'];
-            return view('newsfeed')->with('postNames', $postNames)->with('comments', $comments)->with('friendnames', $friendnames)->with('dps', $dps)->with('username', $username)->with('dp', $this->dp)->with('name', $userData);
+            // var_dump($this->likes);
+            // dd($this->likes);
+            // echo implode("\n",array_collapse($this->likes));
+            
+            // if($this->comments[1][0]==null){
+            //     echo "SAIM";
+            // }
+            // dd($this->postNames);
+            // dd($this->captions[2][0]->caption);
+            // echo $this->likes[0];
+            // dd($this->comments);
+            // for($i=0; $i<count($this->comments); $i++){
+            //     echo $this->comments[2][$i]->comment.'</br>';
+            // }
+            // echo count($this->comments);
+            return view('newsfeed')->with('postNames', $this->postNames)->with('comments', $this->comments)->with('friendnames', $this->friendnames)->with('dps', $this->dps)->with('username', $username)->with('dp', $this->dp)->with('name', $userData)->with('users', $data)->with('likes', $this->likes)->with('captions', $this->captions);
         }
         else{
-            return view('newsfeed')->with('username', $username)->with('dp', $this->dp)->with('name', $userData);
+            return view('newsfeed')->with('postNames', $this->postNames)->with('comments', $this->comments)->with('friendnames', $this->friendnames)->with('dps', $this->dps)->with('username', $username)->with('dp', $this->dp)->with('name', $userData)->with('users', $data);
         }
         
     }
 
-    // function commentonpost(Request $req, $postid, $username, $postowner){
+    function commentonpost(Request $req, $friendname, $postid, $username){
+        try {
+            DB::insert("insert into `".$postid."` (`frndusername`, `comment`) values ('".$username."', '".$req->comment."')");
+            $comments = DB::select("select `comments` from `".$friendname."` where `post` = '".$postid."'");
+            foreach($comments as $comment){
+                $this->commentNo = $comment->comments;
+            }
+            $this->commentNo=$this->commentNo+1;
+            DB::update("Update `".$friendname."` set `comments` = ".$this->commentNo." where `post` = '".$postid."'");
+            return redirect()->back();
+        } catch (Exception $e) {
+            return redirect()->back()-with('error', $e->getMessage());
+        }
+        
+    }
 
-    // }
+    function likeonpost($username, $friendname, $postid){
+        // echo $friendname;
+        try {
+            $likes = DB::select("select `likes` from `".$friendname."` where `post` = '".$postid."'");
+            foreach($likes as $like){
+                $this->like = $like->likes;
+            }
+            $this->like=$this->like+1;
+            echo $this->like;
+            DB::update("Update `".$friendname."` set `likes` = ".$this->like." where `post` = '".$postid."'");
+            return redirect()->back();
+        } catch (Exception $e) {
+            return redirect()->back()-with('error', $e->getMessage());
+        }
+        
+    }
 
 }

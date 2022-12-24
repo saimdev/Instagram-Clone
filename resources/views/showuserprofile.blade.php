@@ -83,9 +83,9 @@
                                 <div class="edit">
                                     <div class="d-flex align-items-center">
                                         <div class="d-flex flex-column align-items-center mx-1">
-                                            <img src="{{asset('/imgs/logos/heart.svg')}}" alt="" class="hover-icon">
+                                            <img src="{{asset('/imgs/logos/heart-fill.svg')}}" alt="" class="hover-icon">
                                             @foreach ($profile as $item)
-                                                @if ($item->post==$frienduser.'_post_'.($i+1))
+                                                @if ($item->post==$frienduser.'_post_'.($i))
                                                     <p>{{$item->likes}}</p>
                                                 @endif
                                             @endforeach
@@ -93,7 +93,7 @@
                                         <div class="d-flex flex-column align-items-center mx-5">
                                             <img src="{{asset('/imgs/logos/comment-alt-middle2.svg')}}" alt="" class="hover-icon">
                                             @foreach ($profile as $item)
-                                                @if ($item->post==$frienduser.'_post_'.($i+1))
+                                                @if ($item->post==$frienduser.'_post_'.($i))
                                                     <p>{{$item->comments}}</p>
                                                 @endif
                                             @endforeach

@@ -49,7 +49,7 @@
                 <div class="p-4" style="border:none; border-radius:0.5rem;background: rgba(128, 128, 128, 0.2);
                 backdrop-filter: blur(25px) saturate(100%);">
                     @if (count($users)==0)
-                        <h3 class="h3">No Users Found For Suggestion</h3>
+                        <h4 class="h4">No Users Found For Suggestion</h4>
                     @else
                         @foreach ($users as $user)
                             <div class="d-flex align-items-center justify-content-between my-3">

@@ -87,7 +87,7 @@
                             <div class="edit">
                                 <div class="d-flex align-items-center">
                                     <div class="d-flex flex-column align-items-center mx-1">
-                                        <img src="{{asset('/imgs/logos/heart.svg')}}" alt="" class="hover-icon">
+                                        <img src="{{asset('/imgs/logos/heart-fill.svg')}}" alt="" class="hover-icon">
                                         <p>14</p>
                                     </div>
                                     <div class="d-flex flex-column align-items-center mx-5">

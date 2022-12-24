@@ -226,6 +226,10 @@ input:focus {
     font-size: 0.9rem;
 }
 
+.comment-button:focus .comments-section{
+    display: flex;
+}
+
 input[type="file"]{
     font-size: 0.8rem;
 }
@@ -265,6 +269,16 @@ textarea{
 .comments{
     overflow-y: scroll;
     overflow-x: hidden;
+}
+
+.view-comments:focus{
+    border: none !important;
+    outline: none !important;
+}
+
+.view-comments{
+    padding: 0 !important;
+    text-align: left !important;
 }
 
   

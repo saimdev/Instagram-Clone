@@ -53,7 +53,8 @@ Route::post('addnewpost/postpicture/{username}', [DataBase::class, 'postPicture'
 Route::get('post/{username}/{postid}/{postsearchid}',[DataBase::class, 'showIndividualPost']);
 Route::get('{username}/post/{frienduser}/{postid}/{postsearchid}',[DataBase::class, 'showUserPost']);
 Route::get('{username}/user/{frienduser}', [DataBase::class, 'showuserprofile']);
-Route::post('post/{username}/{postid}/commentonpost',[DataBase::class, 'commentonpost']);
+Route::post('commentonpost/{friendname}/{postid}/{username}',[DataBase::class, 'commentonpost']);
+Route::get('likepost/{username}/{friendname}/{postid}',[DataBase::class, 'likeonpost']);
 Route::get('{username}/follow/{frienduser}', [DataBase::class, 'followuser']);
 Route::get('{username}/unfollow/{frienduser}', [DataBase::class, 'unfollowuser']);
 Route::get('newsfeed/{username}', [DataBase::class, 'showmainwall']);
