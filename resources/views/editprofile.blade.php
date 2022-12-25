@@ -74,7 +74,7 @@
                                 @else
                                     <label for="" class="mt-2" style="margin-left:0.5rem;font-size: 0.8rem; color:#0d6efd;">Change Profile Picture</label>
                                     <input type="file" name="image" style="">
-                                    <a href="" class="text-danger text-decoration-none" style="margin-left:0.5rem; font-size: 0.7rem;">Remove Profile Picture</a>
+                                    <a href="/removedp/{{$username}}" class="text-danger text-decoration-none" style="margin-left:0.5rem; font-size: 0.7rem;">Remove Profile Picture</a>
                                 @endif
                             </div>
                             </div>
@@ -94,10 +94,10 @@
                                     <label for="" style="margin-right: 2rem; font-size:0.9rem">Username</label>
                                 </div>
                                 <div class="col col-9 d-flex justify-content-start">
-                                    <input class="editinput w-100" type="text" name="username" value="{{$data[0]['username']}}" id="">
+                                    <input class="editinput w-100" type="text" name="username" value="{{$data[0]['username']}}" id="" readonly>
                                 </div>
                             </div>
-                            <p class="mb-3" style=" margin-left:8.2rem;font-size: 0.7rem; color: gray">In most cases, you'll be able to change your username <br> back to kia_yar_rishi_bhai for another 14 days. <a href="" class="text-decoration-none" style="font-size: 0.7rem">Learn more</a></p>
+                            <p class="mb-3" style=" margin-left:8.2rem;font-size: 0.7rem; color: gray">In most cases, you'll be able to change your username <br> back to {{$username}} for another 14 days. <a href="" class="text-decoration-none" style="font-size: 0.7rem">Learn more</a></p>
                             @if ($data[0]['website']=='0')
                                 <div class="row my-3 d-flex align-items-center">
                                     <div class="col col-3 d-flex justify-content-end">
@@ -198,7 +198,7 @@
                                     </div>
                                 </div>
                             @endif
-                            <a href="" class="mb-2 text-decoration-none" style="margin-left:8.2rem; font-size: 0.8rem">Disable your account</a>
+                            <a href="/disableaccount/{{$username}}" class="mb-2 text-decoration-none" style="margin-left:8.2rem; font-size: 0.8rem">Disable your account</a>
                             <button type="submit" class="btn btn-primary w-25" style="margin-left:8.2rem; font-size: 0.9rem">Submit</button>
                         </div>
                     </form>

@@ -59,8 +59,18 @@
                         </div>
                         <div class="d-flex align-items-center my-2">
                             <p class="mx-2">{{$details[0]['posts']}} posts</p>
-                            <p class="mx-3">{{$details[0]['followers']}} followers</p>
-                            <p class="mx-3">{{$details[0]['following']}} following</p>
+                            <select name="" id="" class="mx-3" style="background:transparent; border:none; color:white;" onchange="location = this.value;">
+                                <option value="" style="background: rgb(128, 128, 128, 0.1)" ><p class="">{{$details[0]['followers']}} followers</p></option>
+                                @foreach ($followers as $item)
+                                <option value="/{{$username}}/user/{{$item->frndusername}}" style="color:black"><p class="">{{$item->frndusername}}</p></option>
+                                @endforeach
+                            </select>
+                            <select name="" id="" style="background:transparent; border:none; color:white;" onchange="location = this.value;">
+                                <option value=""><p class="">{{$details[0]['following']}} following</p></option>
+                                @foreach ($followings as $item)
+                                <option value="/{{$username}}/user/{{$item->frndusername}}" style="color:black" ><p class="">{{$item->frndusername}}</p></option>
+                                @endforeach
+                            </select>
                         </div>
                         <p class="fw-bold mt-2 mx-2">{{$details[0]['name']}}</p>
                         @if ($details[0]['bio']!='0')
@@ -82,7 +92,7 @@
                                 <div class="edit">
                                     <div class="d-flex align-items-center">
                                         <div class="d-flex flex-column align-items-center mx-1">
-                                            <img src="{{asset('/imgs/logos/heart.svg')}}" alt="" class="hover-icon">
+                                            <img src="{{asset('/imgs/logos/heart-fill.svg')}}" alt="" class="hover-icon">
                                             @foreach ($profile as $item)
                                                 @if ($item->post==$username.'_post_'.($i))
                                                     <p>{{$item->likes}}</p>

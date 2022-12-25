@@ -63,7 +63,11 @@
                     <label class="mb-4" style="font-size:0.8rem; margin-left:0.5rem;">Upload Image/Video</label>
                     <textarea class="mb-2" name="caption" id="" cols="20" rows="2" required></textarea>
                     <input class="mb-2" type="text" name="location" id="" placeholder="Add Location" style="border-radius: 0.2rem;">
-                    <img src="{{asset('imgs/users/'.$username.'.jpg')}}" alt="" style="width:5rem; clip-path:circle(); margin-left:-1rem;">
+                    @if ($dp==0)
+                        <img src="{{asset('imgs/users/blank.webp')}}" alt="" style="width:3rem; clip-path:circle();">
+                    @else
+                        <img src="{{asset('imgs/users/'.$username.'.jpg')}}" alt="" style="width:3rem; clip-path:circle();">
+                    @endif
                     <button type="submit" class="btn btn-primary my-3">Add Post</button>
                 </form>
             </div>

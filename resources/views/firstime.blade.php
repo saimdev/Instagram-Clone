@@ -54,11 +54,15 @@
                         @foreach ($users as $user)
                             <div class="d-flex align-items-center justify-content-between my-3">
                                 <div class="d-flex align-items-center">
-                                    @if ($dp==0)
-                                        <img class="suggestion-image" src="{{asset('/imgs/users/blank.webp')}}" alt="">
-                                    @else
-                                        <img class="suggestion-image" src="{{asset('/imgs/users/'.$user->username.'.jpg')}}" alt="">
-                                    @endif
+                                    @for ($i = 0; $i < count($dps[0]); $i++)
+                                        @if ($dps[0][$i]->username==$user->username)
+                                            @if ($dps[0][$i]->profilepicture=="0")
+                                                <img class="suggestion-image" src="{{asset('/imgs/users/blank.webp')}}" alt=""> 
+                                            @else
+                                                <img class="suggestion-image" src="{{asset('/imgs/users/'.$user->username.'.jpg')}}" alt="">
+                                            @endif
+                                        @endif
+                                    @endfor
                                     <div class="d-flex flex-column" style="padding-right: 20rem">
                                         <a href="/{{$username}}/user/{{$user->username}}" class="text-white text-decoration-none"><p class="fw-bold" style="font-size: 0.8rem">{{$user->username}}</p></a>
                                         <p class="" style="color:gray; font-size: 0.8rem">{{$user->name}}</p>
@@ -68,7 +72,7 @@
                             </div>
                         @endforeach
                     @endif
-                    <button type="submit" class="btn btn-primary w-100 mt-4">Get Started</button>
+                    <a href="/newsfeed/{{$username}}"><button class="btn btn-primary w-100 mt-4">Get Started</button></a>
                 </div>
             </div>
 

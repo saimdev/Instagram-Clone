@@ -85,11 +85,15 @@
                     @for ($i = 0; $i < count($friendnames); $i++)
                         @if ($contains = Str::contains($post, $friendnames[$i]))
                             <div class="upperPost d-flex align-items-center p-3 w-100">
-                                @if ($dps[$i]!='0')
-                                    <img src="{{asset('/imgs/users/'.$friendnames[$i].'.jpg')}}" class="rightside-profile" alt="" style="margin-right:10px;">
-                                @else
-                                    <img src="{{asset('/imgs/users/blank.webp')}}" class="rightside-profile" alt="" style="margin-right:10px;">
-                                @endif
+                                @for ($k = 0; $k < count($suggestions[0]); $k++)
+                                    @if ($suggestions[0][$k]->username==$friendnames[$i])
+                                        @if ($suggestions[0][$k]->profilepicture!="0")
+                                            <img src="{{asset('/imgs/users/'.$friendnames[$i].'.jpg')}}" class="rightside-profile" alt="" style="margin-right:10px;">
+                                        @else
+                                            <img src="{{asset('/imgs/users/blank.webp')}}" class="rightside-profile" alt="" style="margin-right:10px;">
+                                        @endif
+                                    @endif
+                                @endfor
                                 <div class="w-100 d-flex align-items-center">
                                     <a href="/{{$username}}/user/{{$friendnames[$i]}}"style="font-size: 0.7rem; margin-bottom:0;" class="w-100 text-white text-decoration-none"><p>{{$friendnames[$i]}}</p></a>
                                     <img src="{{asset('/imgs/logos/menu-dots.svg')}}" alt="" class="menu-dots" style="margin-left: 65%;">
@@ -100,7 +104,28 @@
                             </div>
                             <div class="lowerpost d-flex flex-column container-fluid p-3 ">
                                 <div class="operations d-flex align-items-center w-100">
-                                    <a href="/likepost/{{$username}}/{{$friendnames[$i]}}/{{$post}}"><img class="operation-icon" src="{{asset('/imgs/logos/heart.svg')}}" alt=""></a>
+                                    @if (count($likescheck[$j])>0)
+                                    @php
+                                        $likecount=0;
+                                    @endphp
+                                        @for ($k = 0; $k < count($likescheck[$j]); $k++)
+                                            @if ($likescheck[$j][$k]->frndusername==$username)
+                                            @php
+                                                $likecount=1;
+                                            @endphp
+                                                {{-- <a href="/likepost/{{$username}}/{{$friendnames[$i]}}/{{$post}}"><img class="operation-icon" src="{{asset('/imgs/logos/heart-red.svg')}}" alt=""></a> --}}
+                                            {{-- @else --}}
+                                                {{-- <a href="/likepost/{{$username}}/{{$friendnames[$i]}}/{{$post}}"><img class="operation-icon" src="{{asset('/imgs/logos/heart.svg')}}" alt=""></a> --}}
+                                            @endif
+                                        @endfor
+                                        @if ($likecount==1)
+                                        <a href="/likepost/{{$username}}/{{$friendnames[$i]}}/{{$post}}"><img class="operation-icon" src="{{asset('/imgs/logos/heart-red.svg')}}" alt=""></a>
+                                        @else
+                                        <a href="/likepost/{{$username}}/{{$friendnames[$i]}}/{{$post}}"><img class="operation-icon" src="{{asset('/imgs/logos/heart.svg')}}" alt=""></a>
+                                        @endif
+                                    @else
+                                        <a href="/likepost/{{$username}}/{{$friendnames[$i]}}/{{$post}}"><img class="operation-icon" src="{{asset('/imgs/logos/heart.svg')}}" alt=""></a>
+                                    @endif
                                     <a href=""><img class="operation-icon" src="{{asset('/imgs/logos/comment.svg')}}" alt=""></a>
                                     <div class="w-100 d-flex align-items-center">
                                         <a href=""><img class="operation-icon" src="{{asset('/imgs/logos/paper-plane.svg')}}" alt=""></a>
@@ -195,7 +220,15 @@
                     @else
                         @foreach (array_slice($users, 0, 3) as $user)
                         <div class="row d-flex flex-row justify-content-center align-items-center" style="margin-top: 20px;">
-                            <div class="col col-2 "><img src="{{asset('/imgs/users/'.$user->username.'.jpg')}}" class="rightside-profile" alt=""></div>
+                            @for ($i = 0; $i < count($suggestions[0]); $i++)
+                                @if ($suggestions[0][$i]->username==$user->username)
+                                    @if ($suggestions[0][$i]->profilepicture=="0")
+                                    <div class="col col-2 "><img src="{{asset('/imgs/users/blank.webp')}}" class="rightside-profile" alt=""></div>
+                                    @else
+                                        <div class="col col-2 "><img src="{{asset('/imgs/users/'.$user->username.'.jpg')}}" class="rightside-profile" alt=""></div>
+                                    @endif
+                                @endif
+                            @endfor
                             <div class="col col-7"><div class="profile-names d-flex flex-column" style="margin-right: 20px">
                                 <a href="/{{$username}}/user/{{$user->username}}" class="text-white text-decoration-none"><p style="font-size: 0.7rem; margin-bottom:0;">{{$user->username}}</p>
                                     <p style="font-size: 0.7rem; color:gray;margin-bottom:0;">{{$user->name}}</p></a>

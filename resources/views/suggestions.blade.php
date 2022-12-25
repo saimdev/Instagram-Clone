@@ -72,7 +72,6 @@
                             </div>
                         @endforeach
                     @endif
-                    <button type="submit" class="btn btn-primary w-100 mt-4">Get Started</button>
                 </div>
             </div>
 

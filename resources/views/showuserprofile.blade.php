@@ -43,10 +43,10 @@
             <div class="col col-10 d-flex flex-column text-white py-5" style="padding-left: 7rem; padding-right:7rem">
                 <div class="d-flex align-items-center justify-content-start mx-5">
                     <div class="mx-5">
-                        @if ($dp==1)
-                        <img src="{{asset('/imgs/users/blank.webp')}}" class="" alt="" style="width: 10rem; clip-path:circle(); margin-right:3rem">
+                        @if ($frndp==1)
+                            <img src="{{asset('/imgs/users/'.$frienduser.'.jpg')}}" class="" alt="" style="width: 10rem; height:11rem; clip-path:circle(); margin-right:3rem">
                         @else
-                        <img src="{{asset('/imgs/users/'.$frienduser.'.jpg')}}" class="" alt="" style="width: 10rem; height:11rem; clip-path:circle(); margin-right:3rem">
+                            <img src="{{asset('/imgs/users/blank.webp')}}" class="" alt="" style="width: 10rem; clip-path:circle(); margin-right:3rem">
                         @endif
                     </div>
                     <div class="d-flex flex-column justify-content-center">

@@ -20,17 +20,21 @@ use App\Mail\SendMail;
 class DataBase extends Controller
 {
     public $count=0;
+    public $likecheck=0;
     public $dp=0;
+    public $frnddp=0;
     public $frndcount = 0;
     public $postNames = [];
     public $comments = [];
     public $friendnames = [];
     public $dps = [];
+    public $likesheart = [];
     public $likes = [];
     public $captions = [];
     public $postsForDetails = [];
     public $commentNo;
     public $like;
+    public $suggestions = [];
 
     function login(Request $req){
         $req->validate([
@@ -157,6 +161,9 @@ class DataBase extends Controller
                 (SELECT `frndusername` 
                  FROM `".$username."_followings`) AND `username` != '".$username."'");
             shuffle($data);
+            foreach($data as $user){
+                $this->dps[]=DB::select("select `profilepicture`, `username` from `insta_users`");
+            }
             
             $user = DB::table('users')->where('email', $email)->get();
             foreach($user as $item){
@@ -169,7 +176,7 @@ class DataBase extends Controller
                 ->update(['check' => 1]);
             // dd($newData);
             // if($checkD==1){
-                return view('firstime', ['users' => $data])->with('username', $username)->with('dp', $this->dp);
+                return view('firstime', ['users' => $data])->with('username', $username)->with('dp', $this->dp)->with('dps', $this->dps);
             // }
             // else{
             //     return view('firstime', ['users' => $emptyArray])->with('username', $username)->with('dp', $this->dp);
@@ -228,15 +235,23 @@ class DataBase extends Controller
         else{
             $this->frndcount=1;
         }
+        if($data[0]['profilepicture']=='0'){
+            $this->frnddp=0;
+        }
+        else{
+            $this->frnddp=1;
+        }
     }
 
     function showProfile($username){
         $this->checkCount($username);
+        $followersData = DB::select("select * from `".$username."_followers`");
+        $followingsData = DB::select("select * from `".$username."_followings`");
         $data=InstaUser::where('username', $username)->get();
         $profile = DB::table($username)->select('id', 'post', 'comments', 'likes', 'location', 'like', 'caption')->get();
         // echo $this->dp.'</br>';
         // echo $this->count;
-        return view('profile', ['details'=>$data])->with('username', $username)->with('count', $this->count)->with('dp', $this->dp)->with('profile', $profile);
+        return view('profile', ['details'=>$data])->with('username', $username)->with('count', $this->count)->with('dp', $this->dp)->with('profile', $profile)->with('followers', $followersData)->with('followings', $followingsData);
     }
 
     function editProfile($username){
@@ -308,6 +323,11 @@ class DataBase extends Controller
                 $table->text('comment');
             });
 
+            Schema::create($username.'_post_'.$postNo.'_likes', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('frndusername', 30);
+            });
+
 
             // echo $data[0]['posts'];
 
@@ -337,30 +357,56 @@ class DataBase extends Controller
     }
 
     function showIndividualPost($username, $postid, $postsearchid){
+        $likescheck = DB::select("select * from `".$postsearchid."_likes`");
+        foreach($likescheck as $item){
+            if($item->frndusername == $username){
+                $this->likecheck=1;
+            }
+        }
         $this->checkCount($username);
+        $dpcheck = DB::select("select * from `insta_users` where `username` = '".$username."'");
+        foreach($dpcheck as $item){
+            $dpuser = $item->profilepicture;
+        }
         $postData = DB::select("select * from `".$postsearchid."`");
         $data = DB::select("select * from `".$username."` where `post` = '".$postsearchid."'");
+        // dd($this->likecheck);
         // dd($postData);
         // foreach($data as $item){
         //     echo $item;
         // }
         // dd($data);
-        return view('showpost', ['collection' => $data])->with('postdata', $postData)->with('username', $username)->with('dp', $this->dp)->with('postpath', $postsearchid);
+        return view('showpost', ['collection' => $data])->with('postdata', $postData)->with('username', $username)->with('dp', $this->dp)->with('postpath', $postsearchid)->with('likescheck', $this->likecheck)->with('dpuser', $dpuser);
     }
 
     function showUserPost($username, $frienduser, $postid, $postsearchid){
+        $likescheck = DB::select("select * from `".$postsearchid."_likes`");
+        $followersData = DB::select("select * from `".$frienduser."_followers`");
+        $followingsData = DB::select("select * from `".$frienduser."_followings`");
+        foreach($likescheck as $item){
+            if($item->frndusername == $username){
+                $this->likecheck=1;
+            }
+        }
+        // dd($this->likecheck);
         $this->checkCount($username);
         $postData = DB::select("select * from `".$postsearchid."`");
         $data = DB::select("select * from `".$frienduser."` where `post` = '".$postsearchid."'");
+        $dpcheck = DB::select("select * from `insta_users` where `username` = '".$frienduser."'");
+        foreach($dpcheck as $item){
+            $dpuser = $item->profilepicture;
+        }
         // dd($postData);
         // foreach($data as $item){
         //     echo $item;
         // }
         // dd($data);
-        return view('showuserpost', ['collection' => $data])->with('postdata', $postData)->with('username', $username)->with('dp', $this->dp)->with('postpath', $postsearchid)->with('frienduser', $frienduser);
+        return view('showuserpost', ['collection' => $data])->with('postdata', $postData)->with('username', $username)->with('dp', $this->dp)->with('postpath', $postsearchid)->with('frienduser', $frienduser)->with('likescheck', $this->likecheck)->with('dpuser', $dpuser);
     }
 
     function showuserprofile($username, $frienduser){
+        $followersData = DB::select("select * from `".$frienduser."_followers`");
+        $followingsData = DB::select("select * from `".$frienduser."_followings`");
         $this->checkCount($username);
         $this->checkCountFriends($frienduser);
         $checkfollower=0;
@@ -375,7 +421,7 @@ class DataBase extends Controller
         else{
             $checkfollower=0;
         }
-        return view('showuserprofile', ['details'=>$data])->with('username', $username)->with('count', $this->count)->with('frndcount', $this->frndcount)->with('dp', $this->dp)->with('profile', $profile)->with('frndcheck', $checkfollower)->with('frienduser', $frienduser);
+        return view('showuserprofile', ['details'=>$data])->with('username', $username)->with('count', $this->count)->with('frndcount', $this->frndcount)->with('dp', $this->dp)->with('profile', $profile)->with('frndcheck', $checkfollower)->with('frienduser', $frienduser)->with('frndp', $this->frnddp)->with('followers', $followersData)->with('followings', $followingsData);
     }
 
     function followuser($username, $frienduser){
@@ -417,6 +463,11 @@ class DataBase extends Controller
     function showmainwall($username){
         $this->checkCount($username);
         $followings = DB::select("select * from `".$username."_followings`");
+        // foreach($likescheck as $item){
+        //     if($item->frndusername == $username){
+        //         $this->likecheck=1;
+        //     }
+        // }
         $userData = User::where('username', $username)->get('name');
         $followingsCheck=0;
         $postNamesCheck=0;
@@ -430,6 +481,10 @@ class DataBase extends Controller
                  FROM `".$username."_followings`) AND `username` != '".$username."'");
         // dd($followings);
         shuffle($data);
+        // foreach($data as $user){
+            $this->suggestions[]=DB::select("select `profilepicture`, `username` from `insta_users`");
+        // }
+
         if($followings!=null){
 
             $followingsCheck=1;
@@ -453,10 +508,28 @@ class DataBase extends Controller
                 $j++;
             }
 
-            foreach($this->friendnames as $friendpostCount){
+            
+            // foreach($this->postNames as $postno){
+                
+            
+            // }
+            
+            // dd ($this->likesheart);
+            // echo $this->likesheart[0][0]->frndusername.'</br>';
+            // echo $this->likesheart[0][1]->frndusername.'</br>';
+            // echo $this->likesheart[1][0]->frndusername.'</br>';
+            // dd($this->likesheart[1][0]->frndusername=='notyoursaim');
+            // echo $this->likesheart[1][1]->frndusername.'</br>';
+
+            // foreach($this->friendnames as $friendpostCount){
                 // $data = DB::select("select (`posts`) from `insta_users` where `username` = '".$friendpostCount."'");
-                $this->dps[] =  InstaUser::where('username', $friendpostCount)->get('profilepicture');
+                // $this->dps[] =  InstaUser::where('username', $friendpostCount)->get('profilepicture');
                 // $postsCount[]=$data;
+            // }
+            // dd($this->suggestions);
+
+            foreach($this->friendnames as $friendpostCount){
+                $this->suggestions[]=DB::select("select `profilepicture`, `username` from `insta_users`");
             }
 
             if($this->dps!=null){
@@ -477,7 +550,9 @@ class DataBase extends Controller
                     $this->comments[] = DB::select("select * from `".$post."`");
                     $this->captions[] = DB::select("select * from `".$friendusername."` where `post` = '".$post."'");
                     $this->likes[] = DB::select("select * from `".$friendusername."` where `post` = '".$post."'");
+                    $this->likesheart[] = DB::select("select * from `".$post."_likes`");
                 }
+                // dd($this->postNames);
 
                 if($this->comments!=null){
                     $commentsCheck=1;
@@ -553,10 +628,10 @@ class DataBase extends Controller
             //     echo $this->comments[2][$i]->comment.'</br>';
             // }
             // echo count($this->comments);
-            return view('newsfeed')->with('postNames', $this->postNames)->with('comments', $this->comments)->with('friendnames', $this->friendnames)->with('dps', $this->dps)->with('username', $username)->with('dp', $this->dp)->with('name', $userData)->with('users', $data)->with('likes', $this->likes)->with('captions', $this->captions);
+            return view('newsfeed')->with('postNames', $this->postNames)->with('comments', $this->comments)->with('friendnames', $this->friendnames)->with('dps', $this->dps)->with('username', $username)->with('dp', $this->dp)->with('name', $userData)->with('users', $data)->with('likes', $this->likes)->with('captions', $this->captions)->with('suggestions', $this->suggestions)->with('likescheck', $this->likesheart);
         }
         else{
-            return view('newsfeed')->with('postNames', $this->postNames)->with('comments', $this->comments)->with('friendnames', $this->friendnames)->with('dps', $this->dps)->with('username', $username)->with('dp', $this->dp)->with('name', $userData)->with('users', $data);
+            return view('newsfeed')->with('postNames', $this->postNames)->with('comments', $this->comments)->with('friendnames', $this->friendnames)->with('dps', $this->dps)->with('username', $username)->with('dp', $this->dp)->with('name', $userData)->with('users', $data)->with('suggestions', $this->suggestions);
         }
         
     }
@@ -577,21 +652,104 @@ class DataBase extends Controller
         
     }
 
+    function checkLikePost($username, $postid){
+
+        $data =DB::select("select * from `".$postid."_likes`");
+        foreach($data as $item){
+            if($item->frndusername == $username){
+                $this->likecheck=1;
+            }
+        }
+    }
+
     function likeonpost($username, $friendname, $postid){
         // echo $friendname;
         try {
-            $likes = DB::select("select `likes` from `".$friendname."` where `post` = '".$postid."'");
-            foreach($likes as $like){
-                $this->like = $like->likes;
+            $counterlike=0;
+            $checklike = DB::select("select * from `".$postid."_likes`");
+            foreach($checklike as $item){
+                if($item->frndusername == $username){
+                    $counterlike=1;
+                    break;
+                }
             }
-            $this->like=$this->like+1;
-            echo $this->like;
-            DB::update("Update `".$friendname."` set `likes` = ".$this->like." where `post` = '".$postid."'");
+            // dd($counterlike);
+            if($counterlike==0){
+                
+                $likes = DB::select("select `likes` from `".$friendname."` where `post` = '".$postid."'");
+                foreach($likes as $like){
+                    $this->like = $like->likes;
+                }
+                $this->like=$this->like+1;
+                // echo $this->like;
+                DB::update("Update `".$friendname."` set `likes` = ".$this->like." where `post` = '".$postid."'");
+                DB::insert("insert into `".$postid."_likes` (`frndusername`) values ('".$username."')");
+                return redirect()->back();
+            }
+            else{
+                // dd('saim');
+                $likes = DB::select("select `likes` from `".$friendname."` where `post` = '".$postid."'");
+                foreach($likes as $like){
+                    $this->like = $like->likes;
+                }
+                $this->like=$this->like-1;
+                // echo $this->like;
+                DB::update("Update `".$friendname."` set `likes` = ".$this->like." where `post` = '".$postid."'");
+                DB::delete("delete from `".$postid."_likes` where `frndusername` = '".$username."'");
+            }
             return redirect()->back();
         } catch (Exception $e) {
             return redirect()->back()-with('error', $e->getMessage());
         }
         
+    }
+
+    function removedp($username){
+        DB::update("Update `insta_users` set `profilepicture` = 0 where `username` = '".$username."'");
+        $filepath = "/imgs/users/".$username.".jpg";
+        if(File::exists(public_path($filepath))){
+            File::delete(public_path($filepath));
+        }
+        // dd($filepath);
+        // File::delete($filepath);
+        return redirect()->back();
+    }
+
+    function removeaccount($username){
+        $postsdata = DB::select("select * from `".$username."`");
+        foreach($postsdata as $postdelete){
+            Schema::dropIfExists($postdelete->post);
+            Schema::dropIfExists($postdelete->post.'_likes');
+        }
+        
+        $followersdata =DB::select("select * from `insta_users`");
+        foreach($followersdata as $item){
+            $data = DB::select("select * from `insta_users` where `username` = '".$item->username."'");
+            $checkfollow = DB::select("select * from `".$item->username."_followers` where `frndusername` = '".$username."'");
+            if($checkfollow!=null){
+                DB::delete("delete from `".$item->username."_followers` where `frndusername` = '".$username."'");
+                foreach($data as $checkitem){
+                    $follow = $checkitem->followers;
+                }
+                // dd($follow);
+                $follow = $follow-1;
+                DB::update("update `insta_users` set `followers` = ".$follow." where `username` = '".$item->username."'");
+            }
+        }
+        Schema::dropIfExists($username.'_followings');
+        Schema::dropIfExists($username.'_followers');
+        Schema::dropIfExists($username);
+        DB::delete("delete from `users` where `username` = '".$username."'");
+        DB::delete("delete from `insta_users` where `username` = '".$username."'");
+        $filepath = "/imgs/users/".$username.".jpg";
+        $folderpath = "/imgs/users/".$username."/";
+        if(File::exists(public_path($filepath))){
+            File::delete(public_path($filepath));
+        }
+        if(File::exists(public_path($folderpath))){
+            File::deleteDirectory(public_path($folderpath));
+        }
+        return redirect('/');
     }
 
 }

@@ -148,7 +148,13 @@ margin-right: 15px;
   .menu-items:hover{
     color: white;
   }
-
+  select:focus{
+      outline: none;
+      border: none;
+  }
+  option:focus{
+      background: transparent;
+  }
   .rightside-profile{
       width: 2.5rem;
       clip-path:circle();

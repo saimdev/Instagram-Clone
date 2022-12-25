@@ -23,7 +23,9 @@ Route::get('/send-mail/{email}/{code}/{username}', [DataBase::class, 'index']);
 Route::get('confirm/{email}/{code}/{username}', [DataBase::class, 'confirmAccount']);
 Route::view('firstime', 'firstime');
 Route::get('login',[DataBase::class, 'login']);
-Route::view('logout', 'welcome');
+Route::get('logout', function(){
+    return view('welcome');
+});
 
 
 
@@ -59,3 +61,5 @@ Route::get('{username}/follow/{frienduser}', [DataBase::class, 'followuser']);
 Route::get('{username}/unfollow/{frienduser}', [DataBase::class, 'unfollowuser']);
 Route::get('newsfeed/{username}', [DataBase::class, 'showmainwall']);
 Route::get('suggestions/{username}', [DataBase::class, 'suggestions']);
+Route::get('removedp/{username}', [DataBase::class, 'removedp']);
+Route::get('disableaccount/{username}', [DataBase::class, 'removeaccount']);

@@ -53,9 +53,13 @@
                     <div class="col-6 d-flex flex-column py-1 px-4">
                         <div class="d-flex align-items-center justify-content-between mt-3">
                             <div class="d-flex align-items-center">
-                                <img src="{{asset('/imgs/users/'.$frienduser.'.jpg')}}" alt="" style="clip-path:circle();  width: 40px;">
+                                @if ($dpuser=='0')
+                                    <img src="{{asset('/imgs/users/blank.webp')}}" alt="" style="clip-path:circle();" width="40px">
+                                @else
+                                    <img src="{{asset('/imgs/users/'.$frienduser.'.jpg')}}" alt="" style="clip-path:circle();" width="40px">
+                                @endif
                                 <div class="d-flex flex-column align-items-center" style="">
-                                    <p class="" style="font-size: 0.9rem; margin-left:0.9rem;">{{$frienduser}}</p>
+                                    <a href="/{{$username}}/user/{{$frienduser}}" class="text-decoration-none text-white"><p class="" style="font-size: 0.9rem; margin-left:0.9rem;">{{$frienduser}}</p></a>
                                     @foreach ($collection as $item)
                                         <p style="font-size: 0.8rem; color:gray; margin-left:-0.8rem;">{{$item->location}}</p>
                                     @endforeach
@@ -78,7 +82,11 @@
                             <hr style="margin-bottom: 0rem !important">
                             <div class="lowerpost d-flex flex-column container-fluid p-3 ">
                                 <div class="operations d-flex align-items-center w-100">
-                                    <a href=""><img class="operation-icon check-icon" src="{{asset('/imgs/logos/heart.svg')}}" alt=""></a>
+                                    @if ($likescheck==1)
+                                        <a href="/likepost/{{$username}}/{{$frienduser}}/{{$postpath}}"><img class="operation-icon check-icon" src="{{asset('/imgs/logos/heart-red.svg')}}" alt=""></a>
+                                    @else
+                                        <a href="/likepost/{{$username}}/{{$frienduser}}/{{$postpath}}"><img class="operation-icon check-icon" src="{{asset('/imgs/logos/heart.svg')}}" alt=""></a>
+                                    @endif
                                     <a href=""><img class="operation-icon" src="{{asset('/imgs/logos/comment.svg')}}" alt=""></a>
                                     <div class="w-100 d-flex align-items-center">
                                         <a href=""><img class="operation-icon" src="{{asset('/imgs/logos/paper-plane.svg')}}" alt=""></a>
@@ -127,7 +135,11 @@
                             <hr style="margin-bottom: 0rem !important">
                             <div class="lowerpost d-flex flex-column container-fluid p-3 ">
                                 <div class="operations d-flex align-items-center w-100">
-                                    <a href=""><img class="operation-icon check-icon" src="{{asset('/imgs/logos/heart.svg')}}" alt=""></a>
+                                    @if ($likescheck==1)
+                                        <a href="/likepost/{{$username}}/{{$frienduser}}/{{$postpath}}"><img class="operation-icon check-icon" src="{{asset('/imgs/logos/heart-red.svg')}}" alt=""></a>
+                                    @else
+                                        <a href="/likepost/{{$username}}/{{$frienduser}}/{{$postpath}}"><img class="operation-icon check-icon" src="{{asset('/imgs/logos/heart.svg')}}" alt=""></a>
+                                    @endif
                                     <a href=""><img class="operation-icon" src="{{asset('/imgs/logos/comment.svg')}}" alt=""></a>
                                     <div class="w-100 d-flex align-items-center">
                                         <a href=""><img class="operation-icon" src="{{asset('/imgs/logos/paper-plane.svg')}}" alt=""></a>
