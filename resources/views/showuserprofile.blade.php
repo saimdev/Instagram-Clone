@@ -68,7 +68,7 @@
                             <p class="mx-2" style="font-size: 0.9rem">{{$details[0]['bio']}}</p>
                         @endif
                         @if ($details[0]['website']!='0')
-                            <a href="'www.'.{{$details[0]['website']}}" class="mx-2 text-decoration-none" style="font-size: 0.9rem">{{$details[0]['website']}}</a>
+                            <a href="{{$details[0]['website']}}" class="mx-2 text-decoration-none" style="font-size: 0.9rem">{{$details[0]['website']}}</a>
                         @endif
                     </div>
                 </div>
