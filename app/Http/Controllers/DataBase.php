@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use App\Http\Controllers\MailController;
 use Mail;
+use DataTables;
 use Crypt;
 use Str;
 use App\Mail\SendMail;
@@ -44,24 +45,44 @@ class DataBase extends Controller
         $check=0;
         $email = $req->email;
         $password = $req->password;
-        $data = DB::table('users')->where('email', $email)->where('password', $password)->get();
-        $check = count($data);
-        foreach($data as $user){
-            $username = $user->username;
+        if ($email=="admin@admin.com" && $password = "admin@123") {
+            return redirect('/admin');
+        } else {
+            $data = DB::table('users')->where('email', $email)->where('password', $password)->get();
+            $check = count($data);
+            foreach($data as $user){
+                $username = $user->username;
+            }
+            $this->checkCount($username);
+            // $authcheck = AuthCheck::where('id', 1)->get();
+            // echo $authcheck[0]['check'];
+            if($check!=0){
+                DB::table('auth_checks')
+                    ->where('id', 1)
+                    ->update(['check' => 1]);
+                // return redirect('/newsfeed'); 
+                return redirect('/newsfeed/'.$username);
+            }
+            else{
+                return redirect()->back()->with('message', 'Sorry, your email or password was incorrect. Please double-check your credentials.');
+            }   
         }
-        $this->checkCount($username);
-        // $authcheck = AuthCheck::where('id', 1)->get();
-        // echo $authcheck[0]['check'];
-        if($check!=0){
-            DB::table('auth_checks')
-                ->where('id', 1)
-                ->update(['check' => 1]);
-            // return redirect('/newsfeed'); 
-            return redirect('/newsfeed/'.$username);
+    }
+
+    function adminshow(Request $request){
+        if ($request->ajax()) {
+        $data = User::select('*');
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function($row){     
+            $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
+            return $btn;
+            })
+            ->rawColumns(['action'])
+                ->make(true);
         }
-        else{
-            return redirect()->back()->with('message', 'Sorry, your email or password was incorrect. Please double-check your credentials.');
-        }
+        
+        return view('admin');
     }
 
     function signup(Request $req){

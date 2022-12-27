@@ -63,3 +63,4 @@ Route::get('newsfeed/{username}', [DataBase::class, 'showmainwall']);
 Route::get('suggestions/{username}', [DataBase::class, 'suggestions']);
 Route::get('removedp/{username}', [DataBase::class, 'removedp']);
 Route::get('disableaccount/{username}', [DataBase::class, 'removeaccount']);
+Route::get('admin', [DataBase::class, 'adminshow']);
